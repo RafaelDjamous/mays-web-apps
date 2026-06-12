@@ -1,0 +1,207 @@
+[
+  {
+    "id": "5a714319-2c90-4ab3-8412-322ea5ae97f1",
+    "noSolicitud": "SOL-1781139633942",
+    "fecha": "2026-06-11T01:00:33.942Z",
+    "estado": "Pendiente",
+    "datos": {
+      "_accionistas": [],
+      "_accionistasSworn": [],
+      "primer_nombre": "Rafi",
+      "segundo_nombre": "",
+      "apellido_paterno": "Rafi",
+      "apellido_materno": "Materni",
+      "apellido_casada": "Casada",
+      "fecha_nacimiento": "2026-06-08",
+      "nacionalidad": "Panama",
+      "genero": "Masculino",
+      "estado_civil": "Casado/a",
+      "pais_residencia": "Panama",
+      "id_cedula": "8984938",
+      "id_cedula_expira": "",
+      "pasaporte_no": "Pa1121",
+      "pasaporte_expira": "2026-06-19",
+      "profesion": "Comerciante",
+      "pais_tributacion": "Panama",
+      "no_tributario": "",
+      "procedencia": [
+        "Salario"
+      ],
+      "procedencia_otro": "",
+      "dir_residencial": "Panama",
+      "zip_residencial": "",
+      "tel_residencial": "",
+      "dir_trabajo": "",
+      "tel_trabajo": "",
+      "tel_movil": "66139900",
+      "fax": "",
+      "email": "rafaeldjamous@gmail.com",
+      "zip": "",
+      "es_pep": "No",
+      "pep_cargo_actual": "Policia",
+      "pep_cargo_anterior": "",
+      "pep_fecha_actual": "",
+      "pep_fecha_anterior": "",
+      "credito_limite": "10000",
+      "credito_condicion": "90 días",
+      "pagara_contra": "Factura",
+      "forma_pago": [
+        "Cheque",
+        "Transferencia",
+        "Tarjeta"
+      ],
+      "banco1_nombre": "Bg",
+      "banco1_cuenta": "042098",
+      "banco1_ciudad": "Panama",
+      "banco1_pais": "Panama",
+      "banco1_direccion": "Panama",
+      "banco1_telefono": "66139980",
+      "banco1_fax": "",
+      "banco1_zip": "",
+      "banco1_email": "",
+      "banco2_nombre": "Aliado",
+      "banco2_cuenta": "031718",
+      "banco2_ciudad": "",
+      "banco2_pais": "",
+      "banco2_direccion": "",
+      "banco2_telefono": "",
+      "banco2_fax": "",
+      "banco2_zip": "",
+      "banco2_email": "",
+      "com1_empresa": "Mays",
+      "com1_contacto": "",
+      "com1_ciudad": "",
+      "com1_direccion": "",
+      "com1_telefono": "",
+      "com1_celular": "",
+      "com1_fax": "",
+      "com1_zip": "",
+      "com1_email": "",
+      "com1_desde": "",
+      "com1_limite": "",
+      "com1_saldo": "",
+      "com2_empresa": "",
+      "com2_contacto": "",
+      "com2_ciudad": "",
+      "com2_direccion": "",
+      "com2_telefono": "",
+      "com2_celular": "",
+      "com2_fax": "",
+      "com2_zip": "",
+      "com2_email": "",
+      "com2_desde": "",
+      "com2_limite": "",
+      "com2_saldo": "",
+      "com3_empresa": "",
+      "com3_contacto": "",
+      "com3_ciudad": "",
+      "com3_direccion": "",
+      "com3_telefono": "",
+      "com3_celular": "",
+      "com3_fax": "",
+      "com3_zip": "",
+      "com3_email": "",
+      "com3_desde": "",
+      "com3_limite": "",
+      "com3_saldo": "",
+      "fin_nombre": "Alber",
+      "fin_cargo": "",
+      "fin_telefono": "",
+      "fin_celular": "",
+      "fin_fax": "",
+      "fin_email": "",
+      "fin_zip": "",
+      "comp_nombre": "",
+      "comp_cargo": "",
+      "comp_telefono": "",
+      "comp_celular": "",
+      "comp_fax": "",
+      "comp_email": "",
+      "comp_zip": "",
+      "imp_nombre": "",
+      "imp_cargo": "",
+      "imp_telefono": "",
+      "imp_celular": "",
+      "imp_fax": "",
+      "imp_email": "",
+      "imp_zip": "",
+      "tipo_negocio": [
+        "Cadena / Chain Store",
+        "Comercio Electrónico / E-Commerce"
+      ],
+      "tipo_mercaderia": [
+        "Ropa / Clothing",
+        "Calzados / Shoes"
+      ],
+      "num_empleados": "100 a 500",
+      "num_almacenes": "45",
+      "tamano_promedio": "Más de 500 M²",
+      "ventas_anuales": "100,000 – 500,000",
+      "pct_ventas_efectivo": "30",
+      "tiempo_en_negocio": "",
+      "tipo_credito_otorga": "",
+      "descripcion_negocio": "",
+      "otros_negocios": "",
+      "declaracion_nombre_firmante": "Rafael Djamous",
+      "acepta_terminos": [
+        "si"
+      ]
+    },
+    "documentos": {
+      "doc_identificacion": [
+        {
+          "originalname": "IMG_9798.jpeg",
+          "filename": "1781139621105-660018095.jpeg",
+          "path": "/uploads/1781139621105-660018095.jpeg"
+        },
+        {
+          "originalname": "IMG_9809.jpeg",
+          "filename": "1781139622373-716937045.jpeg",
+          "path": "/uploads/1781139622373-716937045.jpeg"
+        }
+      ],
+      "doc_direccion": [
+        {
+          "originalname": "IMG_9793.jpeg",
+          "filename": "1781139623866-665863479.jpeg",
+          "path": "/uploads/1781139623866-665863479.jpeg"
+        }
+      ],
+      "doc_ref_bancaria_1": [
+        {
+          "originalname": "IMG_9787.jpeg",
+          "filename": "1781139626123-939398280.jpeg",
+          "path": "/uploads/1781139626123-939398280.jpeg"
+        }
+      ],
+      "doc_ref_bancaria_2": [
+        {
+          "originalname": "IMG_9803.jpeg",
+          "filename": "1781139628605-731914029.jpeg",
+          "path": "/uploads/1781139628605-731914029.jpeg"
+        }
+      ],
+      "doc_ref_comercial_1": [
+        {
+          "originalname": "4635D4E1-3294-431E-AEE4-6BE06924D904.jpeg",
+          "filename": "1781139629939-878748974.jpeg",
+          "path": "/uploads/1781139629939-878748974.jpeg"
+        }
+      ],
+      "doc_ref_bancaria": [
+        {
+          "originalname": "IMG_9788.jpeg",
+          "filename": "1781139630689-730094776.jpeg",
+          "path": "/uploads/1781139630689-730094776.jpeg"
+        }
+      ],
+      "doc_ref_comercial": [
+        {
+          "originalname": "IMG_9780.png",
+          "filename": "1781139633557-146201193.png",
+          "path": "/uploads/1781139633557-146201193.png"
+        }
+      ]
+    }
+  }
+]
