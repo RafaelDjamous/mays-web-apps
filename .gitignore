@@ -1,0 +1,4 @@
+node_modules/
+data/solicitudes.json
+data/borradores.json
+uploads/

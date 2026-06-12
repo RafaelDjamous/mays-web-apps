@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — May's Zona Libre</title>
+<style>
+:root {
+  --navy: #0d3d1a;
+  --blue: #1a6b2e;
+  --gold: #ffffff;
+  --gold-light: #e8f5e9;
+  --gray: #f1f8f3;
+  --border: #c8e6c9;
+  --text: #1b2e1f;
+  --muted: #4a7a56;
+  --green: #1a6b2e;
+  --yellow: #f39c12;
+  --red: #e74c3c;
+  --white: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray); color: var(--text); min-height: 100vh; }
+
+/* LOGIN */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0d3d1a 0%, #1a6b2e 100%); }
+.login-card { background: var(--white); border-radius: 16px; padding: 48px 40px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; }
+.login-logo { display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.login-card h2 { font-size: 1.3rem; color: var(--navy); margin-bottom: 6px; }
+.login-card p { color: var(--muted); font-size: 0.88rem; margin-bottom: 28px; }
+.login-card input { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 0.95rem; margin-bottom: 14px; }
+.login-card input:focus { outline: none; border-color: var(--blue); }
+.btn-login { width: 100%; background: var(--blue); color: var(--white); border: none; border-radius: 8px; padding: 13px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-login:hover { background: var(--navy); }
+.login-error { color: var(--red); font-size: 0.82rem; margin-top: 8px; display: none; }
+
+/* HEADER */
+header { background: linear-gradient(135deg, #0d3d1a 0%, #1a6b2e 100%); padding: 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,0.25); }
+.header-inner { max-width: 1400px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo-badge { height: 44px; display: flex; align-items: center; }
+.logo-badge img { height: 44px; width: auto; }
+.header-title .sub { font-size: 0.72rem; color: #a8d5b5; letter-spacing: 1px; text-transform: uppercase; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.logout-btn { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 14px; font-size: 0.82rem; cursor: pointer; }
+.logout-btn:hover { background: rgba(255,255,255,0.2); }
+
+/* LAYOUT */
+.admin-wrap { display: none; }
+.sidebar { width: 240px; background: var(--white); border-right: 1px solid var(--border); min-height: calc(100vh - 62px); position: fixed; top: 62px; left: 0; overflow-y: auto; }
+.main-content { margin-left: 240px; padding: 24px; }
+
+/* SIDEBAR */
+.sidebar-section { padding: 20px 0 8px; }
+.sidebar-section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); padding: 0 18px; margin-bottom: 6px; }
+.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 18px; cursor: pointer; font-size: 0.86rem; color: var(--text); transition: all 0.15s; border-left: 3px solid transparent; }
+.sidebar-item:hover { background: var(--gray); }
+.sidebar-item.active { background: #e8f5e9; color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+.sidebar-item .icon { font-size: 1rem; }
+.badge { background: #e8f5e9; color: var(--navy); font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-left: auto; }
+.badge.red { background: #fdecea; color: var(--red); }
+.sidebar-divider { border: none; border-top: 1px solid var(--border); margin: 8px 18px; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--white); border-radius: 12px; padding: 20px 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid var(--blue); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.stat-card.yellow { border-left-color: var(--yellow); }
+.stat-card.green { border-left-color: #27ae60; }
+.stat-card.red { border-left-color: var(--red); }
+.stat-value { font-size: 2.2rem; font-weight: 800; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* TABLE */
+.table-card { background: var(--white); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; }
+.table-header { padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
+.table-header h3 { font-size: 1rem; font-weight: 700; color: var(--navy); }
+.search-wrap { display: flex; align-items: center; gap: 8px; }
+.search-wrap input { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; width: 220px; }
+.search-wrap input:focus { outline: none; border-color: var(--blue); }
+.filter-select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; cursor: pointer; }
+table { width: 100%; border-collapse: collapse; }
+th { background: var(--gray); padding: 10px 14px; text-align: left; font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+td { padding: 11px 14px; font-size: 0.86rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr.clickable-row:hover td { background: #f0faf2; cursor: pointer; }
+
+/* BADGES */
+.status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+.status-Pendiente { background: #fff8e1; color: #e67e22; }
+.status-Revisando { background: #e8f0fb; color: #1a6b2e; }
+.status-Aprobado { background: #e8f8ef; color: #27ae60; }
+.status-Rechazado { background: #fdecea; color: var(--red); }
+.tipo-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+.tipo-juridica { background: #e8f5e9; color: var(--blue); }
+.tipo-natural { background: #e3f2fd; color: #0a7ed6; }
+.doc-count { display: inline-flex; align-items: center; gap: 3px; background: #f0f4f8; color: #6b7a8d; font-size: 0.72rem; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+
+/* QUICK ACTIONS */
+.quick-actions { display: flex; gap: 4px; }
+.qa-btn { border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+.qa-btn:hover { opacity: 0.8; }
+.qa-approve { background: #e8f8ef; color: #27ae60; }
+.qa-reject { background: #fdecea; color: var(--red); }
+.qa-view { background: #e8f5e9; color: var(--blue); }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(5,15,10,0.7); z-index: 500; display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 920px; box-shadow: 0 24px 80px rgba(0,0,0,0.35); overflow: hidden; animation: modalIn 0.2s ease; }
+@keyframes modalIn { from { opacity:0; transform: translateY(16px) scale(0.98); } to { opacity:1; transform: none; } }
+.modal-header { background: linear-gradient(135deg, #0d3d1a, #1a6b2e); color: var(--white); padding: 22px 28px; display: flex; justify-content: space-between; align-items: flex-start; }
+.modal-header h3 { font-size: 1.15rem; font-weight: 700; }
+.modal-header .meta { font-size: 0.78rem; color: #a8d5b5; margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
+.modal-close { background: rgba(255,255,255,0.15); border: none; color: var(--white); border-radius: 6px; padding: 7px 13px; cursor: pointer; font-size: 1rem; flex-shrink: 0; }
+.modal-close:hover { background: rgba(255,255,255,0.28); }
+
+/* TABS */
+.modal-tabs { display: flex; background: #f8faf9; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.tab-btn { padding: 12px 18px; font-size: 0.82rem; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.15s; }
+.tab-btn:hover { color: var(--blue); background: #f0faf2; }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--white); }
+.tab-panel { display: none; padding: 24px 28px; }
+.tab-panel.active { display: block; }
+
+.modal-footer { padding: 14px 28px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #fafbfc; }
+
+/* DETAIL SECTIONS */
+.detail-section { margin-bottom: 22px; }
+.detail-section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--blue); border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 14px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; }
+.detail-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px 20px; }
+.detail-item { }
+.detail-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.detail-value { font-size: 0.88rem; color: var(--text); font-weight: 500; line-height: 1.4; }
+.detail-value.empty { color: #bbb; font-style: italic; font-weight: 400; }
+
+/* REF CARD */
+.ref-card { background: #f8faf9; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+.ref-card-title { font-weight: 700; font-size: 0.85rem; color: var(--blue); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+/* MINI TABLE */
+.mini-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.mini-table th { background: var(--gray); padding: 7px 10px; text-align: left; color: var(--muted); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+.mini-table td { padding: 7px 10px; border-top: 1px solid var(--border); vertical-align: top; }
+
+/* DOCUMENT GALLERY */
+.doc-section { margin-bottom: 20px; }
+.doc-section-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+.doc-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.doc-thumb { border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.15s; background: var(--white); }
+.doc-thumb:hover { border-color: var(--blue); box-shadow: 0 4px 16px rgba(26,107,46,0.15); transform: translateY(-2px); }
+.doc-thumb-preview { height: 100px; display: flex; align-items: center; justify-content: center; background: #f8faf9; font-size: 2.5rem; }
+.doc-thumb-preview img { width: 100%; height: 100%; object-fit: cover; }
+.doc-thumb-name { padding: 6px 8px; font-size: 0.72rem; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top: 1px solid var(--border); }
+.doc-thumb-type { font-size: 0.65rem; color: var(--muted); padding: 0 8px 6px; }
+.doc-no-files { color: var(--muted); font-size: 0.85rem; font-style: italic; padding: 10px 0; }
+
+/* LIGHTBOX */
+.lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; display: none; align-items: center; justify-content: center; flex-direction: column; }
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 82vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+.lightbox-close { position: absolute; top: 20px; right: 24px; color: white; font-size: 2rem; cursor: pointer; background: rgba(255,255,255,0.1); border: none; border-radius: 8px; padding: 4px 14px; }
+.lightbox-name { color: rgba(255,255,255,0.8); font-size: 0.88rem; margin-top: 14px; }
+.lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 2rem; cursor: pointer; background: rgba(255,255,255,0.1); border: none; border-radius: 8px; padding: 8px 16px; transition: background 0.15s; }
+.lightbox-nav:hover { background: rgba(255,255,255,0.25); }
+.lightbox-prev { left: 16px; }
+.lightbox-next { right: 16px; }
+.lightbox-download { color: white; text-decoration: none; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 16px; font-size: 0.82rem; margin-top: 10px; border: 1px solid rgba(255,255,255,0.2); }
+.lightbox-download:hover { background: rgba(255,255,255,0.2); }
+
+/* ACTIONS */
+.btn { padding: 9px 18px; border-radius: 7px; font-size: 0.84rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: var(--blue); color: var(--white); }
+.btn-primary:hover { background: var(--navy); }
+.btn-success { background: #27ae60; color: var(--white); }
+.btn-success:hover { background: #1e8449; }
+.btn-danger { background: var(--red); color: var(--white); }
+.btn-danger:hover { background: #c0392b; }
+.btn-warning { background: var(--yellow); color: var(--white); }
+.btn-outline { background: none; border: 1.5px solid var(--border); color: var(--text); }
+.btn-outline:hover { background: var(--gray); }
+select.status-select { border: 1.5px solid var(--border); border-radius: 7px; padding: 8px 12px; font-size: 0.85rem; cursor: pointer; }
+textarea.notes-input { border: 1.5px solid var(--border); border-radius: 7px; padding: 10px 14px; font-size: 0.85rem; width: 100%; resize: vertical; min-height: 80px; font-family: inherit; }
+textarea.notes-input:focus { outline: none; border-color: var(--blue); }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .detail-grid, .detail-grid-3 { grid-template-columns: 1fr; }
+  .tab-btn { padding: 10px 12px; font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo"><img src="logo.png" alt="May's" style="height:60px;width:auto"></div>
+    <h2>Panel Administrativo</h2>
+    <p>MAY'S ZONA LIBRE, S.A. — Solicitudes de Crédito</p>
+    <input type="password" id="loginPassword" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Ingresar</button>
+    <div class="login-error" id="loginError">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap">
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="logo-badge"><img src="logo.png" alt="May's" style="height:40px;width:auto"></div>
+        <div class="header-title">
+          <div class="sub">Panel Administrativo</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <span style="color:#a8d5b5; font-size:0.78rem" id="adminDate"></span>
+        <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <div style="display:flex">
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Navegación</div>
+        <div class="sidebar-item active" onclick="showView('solicitudes')" id="nav-solicitudes">
+          <span class="icon">📋</span> Todas
+          <span class="badge" id="badge-total">0</span>
+        </div>
+        <div class="sidebar-item" onclick="showView('pendientes')" id="nav-pendientes">
+          <span class="icon">⏳</span> Pendientes
+          <span class="badge red" id="badge-pendientes">0</span>
+        </div>
+        <div class="sidebar-item" onclick="showView('revisando')" id="nav-revisando">
+          <span class="icon">🔍</span> En Revisión
+        </div>
+        <div class="sidebar-item" onclick="showView('aprobadas')" id="nav-aprobadas">
+          <span class="icon">✅</span> Aprobadas
+        </div>
+        <div class="sidebar-item" onclick="showView('rechazadas')" id="nav-rechazadas">
+          <span class="icon">❌</span> Rechazadas
+        </div>
+      </div>
+      <hr class="sidebar-divider">
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Acciones</div>
+        <div class="sidebar-item" onclick="loadData()">
+          <span class="icon">🔄</span> Actualizar
+        </div>
+        <div class="sidebar-item" onclick="exportCSV()">
+          <span class="icon">📥</span> Exportar CSV
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card" onclick="showView('solicitudes')" style="border-left-color:#1a6b2e">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total Solicitudes</div>
+        </div>
+        <div class="stat-card yellow" onclick="showView('pendientes')">
+          <div class="stat-value" id="stat-pendientes">0</div>
+          <div class="stat-label">Pendientes</div>
+        </div>
+        <div class="stat-card green" onclick="showView('aprobadas')">
+          <div class="stat-value" id="stat-aprobadas">0</div>
+          <div class="stat-label">Aprobadas</div>
+        </div>
+        <div class="stat-card red" onclick="showView('rechazadas')">
+          <div class="stat-value" id="stat-rechazadas">0</div>
+          <div class="stat-label">Rechazadas</div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3 id="tableTitle">Todas las Solicitudes</h3>
+          <div class="search-wrap">
+            <input type="text" id="searchInput" placeholder="🔍 Nombre, RUC, email..." oninput="filterTable()">
+            <select class="filter-select" id="filterEstado" onchange="filterTable()">
+              <option value="">Todos los estados</option>
+              <option>Pendiente</option>
+              <option>Revisando</option>
+              <option>Aprobado</option>
+              <option>Rechazado</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>No. Solicitud</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Nombre / Empresa</th>
+                <th>Contacto</th>
+                <th>Crédito</th>
+                <th>Docs</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="flex:1;min-width:0">
+        <h3 id="modalTitle">Detalle de Solicitud</h3>
+        <div class="meta" id="modalMeta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="modal-tabs" id="modalTabs"></div>
+
+    <!-- TAB PANELS -->
+    <div id="modalPanels" style="max-height:68vh; overflow-y:auto"></div>
+
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this||event.target.id==='lightbox')closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lbNav(-1)">&#8592;</button>
+  <img id="lbImg" src="" alt="">
+  <div id="lbName" class="lightbox-name"></div>
+  <a id="lbDownload" href="" download class="lightbox-download">⬇ Descargar</a>
+  <button class="lightbox-nav lightbox-next" onclick="lbNav(1)">&#8594;</button>
+</div>
+
+<script>
+let password = '';
+let allData = [];
+let currentView = 'solicitudes';
+let currentSolicitud = null;
+let lbImages = []; // [{src, name}]
+let lbIndex = 0;
+
+// ─── AUTH ───────────────────────────────────────────────
+function doLogin() {
+  const pw = document.getElementById('loginPassword').value;
+  fetch('/api/solicitudes?password=' + encodeURIComponent(pw))
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(data => {
+      password = pw;
+      allData = data;
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('adminWrap').style.display = 'block';
+      document.getElementById('adminDate').textContent = new Date().toLocaleDateString('es-PA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+      renderTable(allData);
+      updateStats(allData);
+    })
+    .catch(() => { document.getElementById('loginError').style.display = 'block'; });
+}
+
+function doLogout() {
+  password = ''; allData = [];
+  document.getElementById('adminWrap').style.display = 'none';
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+function loadData() {
+  fetch('/api/solicitudes?password=' + encodeURIComponent(password))
+    .then(r => r.json()).then(data => { allData = data; filterTable(); updateStats(allData); });
+}
+
+// ─── STATS ───────────────────────────────────────────────
+function updateStats(data) {
+  document.getElementById('stat-total').textContent = data.length;
+  document.getElementById('stat-pendientes').textContent = data.filter(x => x.estado === 'Pendiente').length;
+  document.getElementById('stat-aprobadas').textContent = data.filter(x => x.estado === 'Aprobado').length;
+  document.getElementById('stat-rechazadas').textContent = data.filter(x => x.estado === 'Rechazado').length;
+  document.getElementById('badge-total').textContent = data.length;
+  document.getElementById('badge-pendientes').textContent = data.filter(x => x.estado === 'Pendiente').length;
+}
+
+// ─── VIEW / FILTER ────────────────────────────────────────
+function showView(view) {
+  currentView = view;
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('nav-' + view)?.classList.add('active');
+  const titles = { solicitudes:'Todas las Solicitudes', pendientes:'Pendientes', revisando:'En Revisión', aprobadas:'Aprobadas', rechazadas:'Rechazadas' };
+  document.getElementById('tableTitle').textContent = titles[view] || 'Solicitudes';
+  const map = { pendientes:'Pendiente', revisando:'Revisando', aprobadas:'Aprobado', rechazadas:'Rechazado' };
+  document.getElementById('filterEstado').value = map[view] || '';
+  filterTable();
+}
+
+function filterTable() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const estado = document.getElementById('filterEstado').value;
+  let filtered = allData;
+  if (estado) filtered = filtered.filter(s => s.estado === estado);
+  if (q) {
+    filtered = filtered.filter(s => {
+      const d = s.datos || {};
+      return [s.noSolicitud, d.primer_nombre, d.apellido_paterno, d.empresa_nombre_legal,
+        d.empresa_nombre_comercial, d.email, d.empresa_email, d.empresa_ruc, d.id_cedula,
+        d.tel_movil, d.empresa_telefono].join(' ').toLowerCase().includes(q);
+    });
+  }
+  renderTable(filtered);
+}
+
+function getName(s) {
+  const d = s.datos || {};
+  if (d.tipo === 'juridica') return d.empresa_nombre_legal || d.empresa_nombre_comercial || '—';
+  return [d.primer_nombre, d.apellido_paterno].filter(Boolean).join(' ') || '—';
+}
+function getEmail(s) { const d = s.datos||{}; return d.email || d.empresa_email || '—'; }
+function getPhone(s) { const d = s.datos||{}; return d.tel_movil || d.empresa_telefono || '—'; }
+function getDocCount(s) { return Object.values(s.documentos||{}).reduce((n,arr) => n+(arr?arr.length:0), 0); }
+
+// ─── TABLE ────────────────────────────────────────────────
+function renderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="icon">📭</div><div>No hay solicitudes</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.slice().reverse().map(s => {
+    const d = s.datos||{};
+    const fecha = new Date(s.fecha).toLocaleDateString('es-PA');
+    const nombre = getName(s);
+    const tipo = d.tipo === 'juridica' ? 'juridica' : 'natural';
+    const tipoLabel = d.tipo === 'juridica' ? 'Jurídica' : 'Natural';
+    const credito = d.credito_limite ? 'US$ ' + Number(d.credito_limite).toLocaleString() : '—';
+    const docCount = getDocCount(s);
+    return `<tr class="clickable-row" onclick="openDetail('${s.id}')">
+      <td><code style="font-size:0.76rem;color:var(--blue)">${s.noSolicitud}</code></td>
+      <td style="white-space:nowrap">${fecha}</td>
+      <td><span class="tipo-badge tipo-${tipo}">${tipoLabel}</span></td>
+      <td><strong>${nombre}</strong><div style="font-size:0.75rem;color:var(--muted)">${d.empresa_ruc||d.id_cedula||''}</div></td>
+      <td><div style="font-size:0.82rem">${getEmail(s)}</div><div style="font-size:0.75rem;color:var(--muted)">${getPhone(s)}</div></td>
+      <td style="white-space:nowrap">${credito}</td>
+      <td><span class="doc-count">📎 ${docCount}</span></td>
+      <td><span class="status-badge status-${s.estado}">${s.estado}</span></td>
+      <td onclick="event.stopPropagation()">
+        <div class="quick-actions">
+          <button class="qa-btn qa-view" onclick="openDetail('${s.id}')">Ver</button>
+          <button class="qa-btn qa-approve" onclick="quickStatus('${s.id}','Aprobado')">✓</button>
+          <button class="qa-btn qa-reject" onclick="quickStatus('${s.id}','Rechazado')">✗</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function quickStatus(id, estado) {
+  fetch(`/api/solicitudes/${id}?password=${encodeURIComponent(password)}`, {
+    method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({estado})
+  }).then(() => {
+    const idx = allData.findIndex(x => x.id === id);
+    if (idx !== -1) allData[idx].estado = estado;
+    filterTable(); updateStats(allData);
+  });
+}
+
+// ─── MODAL ────────────────────────────────────────────────
+function val(v) {
+  if (!v || (Array.isArray(v) && !v.length)) return '<span class="detail-value empty">—</span>';
+  if (Array.isArray(v)) return `<span class="detail-value">${v.join(', ')}</span>`;
+  return `<span class="detail-value">${v}</span>`;
+}
+function di(label, value) {
+  return `<div class="detail-item"><div class="detail-label">${label}</div>${val(value)}</div>`;
+}
+
+function openDetail(id) {
+  const s = allData.find(x => x.id === id);
+  if (!s) return;
+  currentSolicitud = s;
+  const d = s.datos||{};
+  const isJ = d.tipo === 'juridica';
+  const nombre = getName(s);
+  const docCount = getDocCount(s);
+
+  document.getElementById('modalTitle').textContent = nombre;
+  document.getElementById('modalMeta').innerHTML = `
+    <span>${s.noSolicitud}</span>
+    <span>📅 ${new Date(s.fecha).toLocaleString('es-PA')}</span>
+    <span class="status-badge status-${s.estado}" style="font-size:0.72rem">${s.estado}</span>
+    <span>📎 ${docCount} doc${docCount!==1?'s':''}</span>`;
+
+  const tabs = [
+    { id:'info', label: isJ ? '🏢 Empresa' : '👤 Personal' },
+    { id:'credit', label:'💳 Crédito' },
+    { id:'refs', label:'🏦 Referencias' },
+    { id:'contacts', label:'📞 Contactos' },
+    { id:'docs', label:`📎 Documentos (${docCount})` },
+    { id:'notes', label:'📝 Notas' },
+  ];
+
+  document.getElementById('modalTabs').innerHTML = tabs.map((t,i) =>
+    `<button class="tab-btn${i===0?' active':''}" onclick="switchTab('${t.id}')" id="tab-${t.id}">${t.label}</button>`
+  ).join('');
+
+  document.getElementById('modalPanels').innerHTML = tabs.map(t =>
+    `<div class="tab-panel${t.id==='info'?' active':''}" id="panel-${t.id}"></div>`
+  ).join('');
+
+  buildInfoPanel(s, d, isJ);
+  buildCreditPanel(d);
+  buildRefsPanel(d);
+  buildContactsPanel(d, isJ);
+  buildDocsPanel(s);
+  buildNotesPanel(s);
+
+  document.getElementById('modalFooter').innerHTML = `
+    <select class="status-select" id="modalEstado">
+      ${['Pendiente','Revisando','Aprobado','Rechazado'].map(e =>
+        `<option ${s.estado===e?'selected':''}>${e}</option>`).join('')}
+    </select>
+    <button class="btn btn-primary" onclick="saveStatus()">💾 Guardar Estado</button>
+    <div style="flex:1"></div>
+    <button class="btn btn-outline" onclick="closeModal()">Cerrar</button>`;
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id)?.classList.add('active');
+  document.getElementById('panel-' + id)?.classList.add('active');
+}
+
+// ─── TAB BUILDERS ─────────────────────────────────────────
+function buildInfoPanel(s, d, isJ) {
+  let html = '';
+  if (isJ) {
+    html += `<div class="detail-section"><div class="detail-section-title">Datos de la Empresa</div><div class="detail-grid">`;
+    html += di('Nombre Legal', d.empresa_nombre_legal);
+    html += di('Nombre Comercial', d.empresa_nombre_comercial);
+    html += di('Tipo de Empresa', d.empresa_tipo);
+    html += di('RUC', d.empresa_ruc);
+    html += di('País de Constitución', d.empresa_pais_constitucion);
+    html += di('Fecha de Constitución', d.empresa_fecha_constitucion);
+    html += di('Actividad Principal', d.empresa_actividad);
+    html += di('Aviso de Operación', d.empresa_aviso_operacion);
+    html += di('Inscripción', d.empresa_inscripcion);
+    html += di('Teléfono', d.empresa_telefono);
+    html += di('Email', d.empresa_email);
+    html += di('Sitio Web', d.empresa_web);
+    html += di('Dirección', d.empresa_direccion);
+    html += di('Apartado/ZIP', d.empresa_zip);
+    html += di('País de Tributación', d.pais_tributacion);
+    html += di('No. Tributario', d.no_tributario);
+    html += `</div></div>`;
+
+    html += `<div class="detail-section"><div class="detail-section-title">Representante Legal</div><div class="detail-grid">`;
+    html += di('Nombre', d.rep_nombre);
+    html += di('Identificación', d.rep_id);
+    html += di('Venc. ID', d.rep_id_expira);
+    html += di('Nacionalidad', d.rep_nacionalidad);
+    html += di('Teléfono', d.rep_telefono);
+    html += di('Email', d.rep_email);
+    html += di('Dirección', d.rep_direccion);
+    html += `</div></div>`;
+
+    html += `<div class="detail-section"><div class="detail-section-title">Dueño / Propietario</div><div class="detail-grid">`;
+    html += di('Nombre', d.dueno_nombre);
+    html += di('Identificación', d.dueno_id);
+    html += di('Venc. ID', d.dueno_id_expira);
+    html += di('Nacionalidad', d.dueno_nacionalidad);
+    html += di('Teléfono', d.dueno_telefono);
+    html += di('Email', d.dueno_email);
+    html += `</div></div>`;
+  } else {
+    html += `<div class="detail-section"><div class="detail-section-title">Datos Personales</div><div class="detail-grid">`;
+    html += di('Nombre Completo', [d.primer_nombre,d.segundo_nombre,d.apellido_paterno,d.apellido_materno].filter(Boolean).join(' '));
+    html += di('Apellido de Casada', d.apellido_casada);
+    html += di('Fecha de Nacimiento', d.fecha_nacimiento);
+    html += di('Nacionalidad', d.nacionalidad);
+    html += di('Género', d.genero);
+    html += di('Estado Civil', d.estado_civil);
+    html += di('País de Residencia', d.pais_residencia);
+    html += di('Cédula / ID', d.id_cedula);
+    html += di('Venc. Cédula', d.id_cedula_expira);
+    html += di('Pasaporte No.', d.pasaporte_no);
+    html += di('Venc. Pasaporte', d.pasaporte_expira);
+    html += di('Profesión', d.profesion);
+    html += di('Procedencia Fondos', d.procedencia);
+    html += di('País de Tributación', d.pais_tributacion);
+    html += di('No. Tributario', d.no_tributario);
+    html += `</div></div>`;
+  }
+
+  // PEP
+  html += `<div class="detail-section"><div class="detail-section-title">Declaración PEP</div><div class="detail-grid">`;
+  html += di('¿Es PEP?', d.es_pep);
+  if (d.es_pep === 'Sí' || d.es_pep === 'Si') {
+    html += di('Cargo Actual', d.pep_cargo_actual);
+    html += di('Cargo Anterior', d.pep_cargo_anterior);
+    html += di('Fecha Cargo Actual', d.pep_fecha_actual);
+    html += di('Fecha Cargo Anterior', d.pep_fecha_anterior);
+  }
+  html += `</div></div>`;
+
+  // Accionistas
+  const accs = d._accionistas||[];
+  const accsSworn = d._accionistasSworn||[];
+  if (accs.length && accs[0]?.nombre) {
+    html += `<div class="detail-section"><div class="detail-section-title">Accionistas — Declaración Jurada</div>
+    <table class="mini-table"><thead><tr><th>Nombre</th><th>Nacionalidad</th><th>Ocupación</th><th>Cédula/Pasaporte</th><th>%</th></tr></thead><tbody>
+    ${accs.map(a=>`<tr><td>${a.nombre||'—'}</td><td>${a.nacionalidad||'—'}</td><td>${a.ocupacion||'—'}</td><td>${a.cedula||'—'}</td><td>${a.porcentaje||'—'}</td></tr>`).join('')}
+    </tbody></table></div>`;
+  }
+  if (accsSworn.length && accsSworn[0]?.nombre) {
+    html += `<div class="detail-section"><div class="detail-section-title">Shareholders — Sworn Declaration</div>
+    <table class="mini-table"><thead><tr><th>Name</th><th>Nationality</th><th>Other</th><th>Country</th><th>US Person</th><th>%</th></tr></thead><tbody>
+    ${accsSworn.map(a=>`<tr><td>${a.nombre||'—'}</td><td>${a.nacionalidad||'—'}</td><td>${a.otra_nacionalidad||'—'}</td><td>${a.pais_residencia||'—'}</td><td>${a.us_person||'—'}</td><td>${a.porcentaje||'—'}</td></tr>`).join('')}
+    </tbody></table></div>`;
+  }
+  if (d.declaracion_nombre_firmante) {
+    html += `<div class="detail-section"><div class="detail-section-title">Datos del Firmante</div><div class="detail-grid">`;
+    html += di('Nombre', d.declaracion_nombre_firmante);
+    html += di('Cargo', d.declaracion_cargo_firmante);
+    html += di('Expediente', d.declaracion_expediente);
+    html += di('Rollo/Doc', d.declaracion_rollo);
+    html += di('Imagen/Entry', d.declaracion_imagen);
+    html += `</div></div>`;
+  }
+
+  document.getElementById('panel-info').innerHTML = html;
+}
+
+function buildCreditPanel(d) {
+  let html = `<div class="detail-section"><div class="detail-section-title">Crédito Solicitado</div><div class="detail-grid">`;
+  html += di('Límite Solicitado', d.credito_limite ? 'US$ ' + Number(d.credito_limite).toLocaleString() : null);
+  html += di('Condición de Pago', d.credito_condicion);
+  html += di('Pagará Contra', d.pagara_contra);
+  html += di('Forma de Pago', d.forma_pago);
+  html += `</div></div>`;
+
+  html += `<div class="detail-section"><div class="detail-section-title">Información Adicional del Negocio</div><div class="detail-grid">`;
+  html += di('Tipo de Negocio', Array.isArray(d.tipo_negocio) ? d.tipo_negocio.join(', ') : d.tipo_negocio);
+  html += di('Tipo de Mercadería', Array.isArray(d.tipo_mercaderia) ? d.tipo_mercaderia.join(', ') : d.tipo_mercaderia);
+  html += di('No. de Empleados', d.num_empleados);
+  html += di('No. de Almacenes', d.num_almacenes);
+  html += di('Tamaño Promedio', d.tamano_promedio);
+  html += di('Ventas Anuales', d.ventas_anuales);
+  html += di('% Ventas en Efectivo', d.pct_ventas_efectivo);
+  html += di('Tiempo en el Negocio', d.tiempo_en_negocio);
+  html += di('Otros Negocios', d.otros_negocios);
+  html += `</div>`;
+  if (d.tipo_credito_otorga) html += `<div style="margin-top:10px">${di('Tipo de Crédito que Otorga', d.tipo_credito_otorga)}</div>`;
+  if (d.descripcion_negocio) html += `<div style="margin-top:10px">${di('Descripción del Negocio', d.descripcion_negocio)}</div>`;
+  html += `</div>`;
+
+  document.getElementById('panel-credit').innerHTML = html;
+}
+
+function buildRefsPanel(d) {
+  let html = `<div class="detail-section"><div class="detail-section-title">Referencias Bancarias</div>`;
+  let hasBanks = false;
+  [1,2].forEach(n => {
+    if (!d[`banco${n}_nombre`]) return;
+    hasBanks = true;
+    html += `<div class="ref-card">
+      <div class="ref-card-title">🏦 Banco ${n}: ${d[`banco${n}_nombre`]}</div>
+      <div class="detail-grid">
+        ${di('No. Cuenta', d[`banco${n}_cuenta`])}
+        ${di('Ciudad / País', [d[`banco${n}_ciudad`],d[`banco${n}_pais`]].filter(Boolean).join(' / '))}
+        ${di('Teléfono', d[`banco${n}_telefono`])}
+        ${di('Email', d[`banco${n}_email`])}
+        ${di('Dirección', d[`banco${n}_direccion`])}
+      </div></div>`;
+  });
+  if (!hasBanks) html += `<div class="doc-no-files">No se registraron referencias bancarias.</div>`;
+  html += `</div>`;
+
+  html += `<div class="detail-section"><div class="detail-section-title">Referencias Comerciales</div>`;
+  let hasComs = false;
+  [1,2,3].forEach(n => {
+    if (!d[`com${n}_empresa`]) return;
+    hasComs = true;
+    html += `<div class="ref-card">
+      <div class="ref-card-title">🏪 ${d[`com${n}_empresa`]}</div>
+      <div class="detail-grid">
+        ${di('Contacto', d[`com${n}_contacto`])}
+        ${di('Teléfono', d[`com${n}_telefono`])}
+        ${di('Email', d[`com${n}_email`])}
+        ${di('Cliente desde', d[`com${n}_desde`])}
+        ${di('Límite Crédito', d[`com${n}_limite`] ? 'US$ '+Number(d[`com${n}_limite`]).toLocaleString() : null)}
+        ${di('Saldo Actual', d[`com${n}_saldo`] ? 'US$ '+Number(d[`com${n}_saldo`]).toLocaleString() : null)}
+      </div></div>`;
+  });
+  if (!hasComs) html += `<div class="doc-no-files">No se registraron referencias comerciales.</div>`;
+  html += `</div>`;
+
+  document.getElementById('panel-refs').innerHTML = html;
+}
+
+function buildContactsPanel(d, isJ) {
+  let html = `<div class="detail-section"><div class="detail-section-title">Información de Contacto</div><div class="detail-grid">`;
+  html += di('Email', d.email || d.empresa_email);
+  html += di('Teléfono Móvil', d.tel_movil || d.empresa_telefono);
+  html += di('Tel. Residencial', d.tel_residencial);
+  html += di('Tel. Trabajo', d.tel_trabajo);
+  html += di('Fax', d.fax);
+  html += di('Dirección Residencial', d.dir_residencial);
+  html += di('Dirección Trabajo', d.dir_trabajo);
+  html += di('Apartado/ZIP', d.zip);
+  html += `</div></div>`;
+
+  const areas = [
+    {area:'Finanzas', k:'fin'},
+    {area:'Compras', k:'comp'},
+    {area:'Importación', k:'imp'},
+  ].filter(x => d[`${x.k}_nombre`]);
+
+  if (areas.length) {
+    html += `<div class="detail-section"><div class="detail-section-title">Contactos de Empresa por Área</div>
+    <table class="mini-table"><thead><tr><th>Área</th><th>Nombre</th><th>Teléfono</th><th>Celular</th><th>Email</th></tr></thead><tbody>
+    ${areas.map(({area,k}) =>
+      `<tr><td><strong>${area}</strong></td><td>${d[`${k}_nombre`]||'—'}</td><td>${d[`${k}_telefono`]||'—'}</td><td>${d[`${k}_celular`]||'—'}</td><td>${d[`${k}_email`]||'—'}</td></tr>`
+    ).join('')}
+    </tbody></table></div>`;
+  }
+
+  document.getElementById('panel-contacts').innerHTML = html;
+}
+
+function buildDocsPanel(s) {
+  const docs = s.documentos || {};
+  const docNames = {
+    doc_identificacion: '🪪 Identificación',
+    doc_empresa: '🏢 Documentos Empresa',
+    doc_direccion: '🏠 Comprobante Dirección',
+    doc_ref_bancaria: '🏦 Referencias Bancarias',
+    doc_ref_bancaria_1: '🏦 Ref. Bancaria 1',
+    doc_ref_bancaria_2: '🏦 Ref. Bancaria 2',
+    doc_ref_comercial: '📋 Referencias Comerciales',
+    doc_ref_comercial_1: '📋 Ref. Comercial 1',
+    doc_ref_comercial_2: '📋 Ref. Comercial 2',
+    doc_ref_comercial_3: '📋 Ref. Comercial 3',
+  };
+
+  const imgExts = ['.jpg','.jpeg','.png'];
+  const hasAny = Object.values(docs).some(arr => arr && arr.length);
+
+  // Collect all images for lightbox
+  lbImages = [];
+  Object.values(docs).forEach(files => {
+    if (!files) return;
+    files.forEach(f => {
+      const ext = f.originalname.toLowerCase().slice(f.originalname.lastIndexOf('.'));
+      if (imgExts.includes(ext)) lbImages.push({src: f.path, name: f.originalname});
+    });
+  });
+
+  let html = '';
+  if (!hasAny) {
+    html = `<div class="empty-state"><div class="icon">📭</div><div>No se cargaron documentos en esta solicitud.</div></div>`;
+  } else {
+    Object.entries(docs).forEach(([field, files]) => {
+      if (!files || !files.length) return;
+      html += `<div class="doc-section"><div class="doc-section-label">${docNames[field]||field}</div><div class="doc-gallery">`;
+      files.forEach(f => {
+        const ext = f.originalname.toLowerCase().slice(f.originalname.lastIndexOf('.'));
+        const isImg = imgExts.includes(ext);
+        const imgIdx = lbImages.findIndex(x => x.src === f.path);
+        const previewHtml = isImg
+          ? `<img src="${f.path}" alt="${f.originalname}" loading="lazy" onerror="this.parentElement.innerHTML='🖼️'">`
+          : `${{'.pdf':'📄', '.doc':'📝', '.docx':'📝'}[ext]||'📎'}`;
+        const clickAction = isImg
+          ? `openLightbox(${imgIdx})`
+          : `window.open('${f.path}','_blank')`;
+        html += `<div class="doc-thumb" onclick="${clickAction}" title="${f.originalname}">
+          <div class="doc-thumb-preview">${previewHtml}</div>
+          <div class="doc-thumb-name">${f.originalname}</div>
+          <div class="doc-thumb-type">${ext.toUpperCase().replace('.','')}</div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+  }
+
+  document.getElementById('panel-docs').innerHTML = html;
+}
+
+function buildNotesPanel(s) {
+  document.getElementById('panel-notes').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Notas Internas</div>
+      <textarea class="notes-input" id="modalNotes" placeholder="Agregar notas de revisión, comentarios internos...">${s.notas||''}</textarea>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="saveStatus()">💾 Guardar Notas</button>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Historial</div>
+      <div style="font-size:0.82rem;color:var(--muted)">
+        <div>📅 Fecha de solicitud: ${new Date(s.fecha).toLocaleString('es-PA')}</div>
+        <div style="margin-top:4px">🆔 ID interno: <code style="font-size:0.75rem">${s.id}</code></div>
+      </div>
+    </div>`;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  currentSolicitud = null;
+}
+
+function saveStatus() {
+  if (!currentSolicitud) return;
+  const estado = document.getElementById('modalEstado')?.value || currentSolicitud.estado;
+  const notesEl = document.getElementById('modalNotes');
+  const notas = notesEl ? notesEl.value : (currentSolicitud.notas || '');
+  fetch(`/api/solicitudes/${currentSolicitud.id}?password=${encodeURIComponent(password)}`, {
+    method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({estado, notas})
+  }).then(r => r.json()).then(() => {
+    const idx = allData.findIndex(x => x.id === currentSolicitud.id);
+    if (idx !== -1) { allData[idx].estado = estado; allData[idx].notas = notas; }
+    currentSolicitud.estado = estado; currentSolicitud.notas = notas;
+    document.getElementById('modalMeta').innerHTML = `
+      <span>${currentSolicitud.noSolicitud}</span>
+      <span>📅 ${new Date(currentSolicitud.fecha).toLocaleString('es-PA')}</span>
+      <span class="status-badge status-${estado}" style="font-size:0.72rem">${estado}</span>`;
+    filterTable(); updateStats(allData);
+    const btn = document.querySelector('#modalFooter .btn-primary');
+    if (btn) { const orig = btn.innerHTML; btn.innerHTML = '✅ Guardado'; setTimeout(()=>btn.innerHTML=orig, 2000); }
+  });
+}
+
+// ─── LIGHTBOX ─────────────────────────────────────────────
+function openLightbox(idx) {
+  lbIndex = idx;
+  renderLb();
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+function lbNav(dir) { lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length; renderLb(); }
+function renderLb() {
+  const img = lbImages[lbIndex];
+  document.getElementById('lbImg').src = img.src;
+  document.getElementById('lbName').textContent = `${img.name} (${lbIndex+1}/${lbImages.length})`;
+  document.getElementById('lbDownload').href = img.src;
+  document.getElementById('lbDownload').download = img.name;
+  document.querySelector('.lightbox-prev').style.display = lbImages.length > 1 ? '' : 'none';
+  document.querySelector('.lightbox-next').style.display = lbImages.length > 1 ? '' : 'none';
+}
+
+// ─── EXPORT ───────────────────────────────────────────────
+function exportCSV() {
+  if (!allData.length) { alert('No hay datos para exportar.'); return; }
+  const headers = ['No.Solicitud','Fecha','Estado','Tipo','Nombre/Empresa','RUC/Cedula','Email','Telefono','Credito Solicitado','Condicion Pago','PEP'];
+  const rows = allData.map(s => {
+    const d = s.datos||{};
+    const isJ = d.tipo === 'juridica';
+    return [
+      s.noSolicitud, new Date(s.fecha).toLocaleDateString('es-PA'), s.estado,
+      isJ?'Jurídica':'Natural',
+      isJ?(d.empresa_nombre_legal||''):[d.primer_nombre,d.apellido_paterno].join(' '),
+      isJ?(d.empresa_ruc||''):(d.id_cedula||''),
+      d.email||d.empresa_email||'', d.tel_movil||d.empresa_telefono||'',
+      d.credito_limite||'', d.credito_condicion||'', d.es_pep||''
+    ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',');
+  });
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download = `solicitudes_mays_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('lightbox').classList.contains('open')) closeLightbox();
+    else closeModal();
+  }
+  if (document.getElementById('lightbox').classList.contains('open')) {
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+  }
+});
+</script>
+</body>
+</html>

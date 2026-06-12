@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de Crédito — May's Zona Libre</title>
+<style>
+:root {
+  --navy: #0d3d1a;
+  --blue: #1a6b2e;
+  --gold: #ffffff;
+  --gold-light: #e8f5e9;
+  --gray: #f1f8f3;
+  --border: #c8e6c9;
+  --text: #1b2e1f;
+  --muted: #4a7a56;
+  --green: #1a6b2e;
+  --red: #e74c3c;
+  --white: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray); color: var(--text); min-height: 100vh; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+
+/* HEADER */
+header { background: linear-gradient(135deg, #0d3d1a 0%, #1a6b2e 100%); padding: 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,0.25); }
+.header-inner { max-width: 960px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+.logo-text { color: var(--white); }
+.logo-text .brand { font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; color: #ffffff; }
+.logo-text .sub { font-size: 0.75rem; color: #a8d5b5; letter-spacing: 2px; text-transform: uppercase; }
+.logo-badge { height: 72px; display: flex; align-items: center; flex-shrink: 0; }
+.logo-badge img { height: 72px; width: auto; filter: none; }
+
+/* PROGRESS BAR */
+.progress-wrap { background: #0d3d1a; padding: 0 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+.progress-inner { max-width: 960px; margin: 0 auto; padding: 12px 0; }
+.progress-steps { display: flex; gap: 4px; align-items: center; }
+.step-dot { flex: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; transition: background 0.3s; }
+.step-dot.done { background: var(--gold); }
+.step-dot.active { background: var(--gold-light); }
+.progress-label { color: #ccd; font-size: 0.78rem; margin-top: 6px; text-align: center; }
+
+/* MAIN */
+main { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+
+/* CARD */
+.card { background: var(--white); border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); overflow: hidden; }
+.card-header { background: linear-gradient(135deg, #0d3d1a 0%, #1a6b2e 100%); color: var(--white); padding: 28px 32px; }
+.card-header h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+.card-header p { font-size: 0.88rem; color: #aac; }
+.step-number { display: inline-block; background: rgba(255,255,255,0.25); color: #ffffff; font-weight: 800; font-size: 0.75rem; padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.4); }
+.card-body { padding: 32px; }
+
+/* FORM ELEMENTS */
+.form-grid { display: grid; gap: 20px; }
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 0.82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.form-group label .req { color: var(--red); margin-left: 2px; }
+input, select, textarea {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  color: var(--text);
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  font-family: inherit;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26,58,107,0.1);
+}
+textarea { resize: vertical; min-height: 80px; }
+.input-hint { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+/* SECTION TITLE */
+.section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blue);
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 6px;
+  margin-bottom: 20px;
+  margin-top: 8px;
+}
+
+/* TYPE SELECTOR */
+.type-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 8px 0; }
+.type-card {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  background: var(--white);
+}
+.type-card:hover { border-color: var(--blue); background: #f0f4fa; }
+.type-card.selected { border-color: var(--blue); background: #e8f0fb; }
+.type-card .type-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.type-card .type-name { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.type-card .type-desc { font-size: 0.8rem; color: var(--muted); }
+
+/* CHECKBOX GROUP */
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+.checkbox-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.checkbox-item input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--blue); }
+.checkbox-item span { font-size: 0.88rem; }
+
+/* RADIO GROUP */
+.radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+.radio-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.radio-item input[type=radio] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--blue); }
+
+/* ACCIONISTA TABLE */
+.accionista-row { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; position: relative; }
+.accionista-row .remove-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: var(--red); cursor: pointer; font-size: 1.2rem; }
+.add-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 2px dashed var(--blue); color: var(--blue); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; margin-top: 8px; }
+.add-btn:hover { background: #e8f0fb; }
+
+/* FILE UPLOAD */
+.file-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.file-upload-area:hover { border-color: var(--blue); background: #f0f4fa; }
+.file-upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.file-upload-area .upload-icon { font-size: 1.8rem; margin-bottom: 6px; }
+.file-upload-area .upload-label { font-size: 0.85rem; color: var(--muted); }
+.file-list { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.file-tag { background: #e8f0fb; color: var(--blue); padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; display: flex; align-items: center; gap: 4px; }
+.file-tag button { background: none; border: none; color: var(--blue); cursor: pointer; padding: 0; font-size: 0.9rem; }
+
+/* PEP WARNING */
+.pep-alert { background: #fff8e1; border: 1px solid #f0c040; border-radius: 8px; padding: 14px 18px; font-size: 0.82rem; color: #7a5c00; line-height: 1.6; margin-bottom: 16px; }
+
+/* REFERENCE BLOCK */
+.ref-block { border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; background: #fafbfc; }
+.ref-block-title { font-size: 0.8rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+/* NAVIGATION BUTTONS */
+.nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+.btn { padding: 12px 28px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: #1a6b2e; color: var(--white); }
+.btn-primary:hover { background: #0d3d1a; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,107,46,0.35); }
+.btn-secondary { background: var(--gray); color: var(--text); border: 1.5px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+.btn-gold { background: #1a6b2e; color: white; }
+.btn-gold:hover { background: #0d3d1a; }
+.btn-success { background: #1a6b2e; color: var(--white); }
+.btn-success:hover { background: #0d3d1a; }
+
+/* SUCCESS SCREEN */
+.success-screen { text-align: center; padding: 60px 32px; }
+.success-icon { font-size: 5rem; margin-bottom: 20px; }
+.success-screen h2 { font-size: 1.8rem; color: var(--navy); margin-bottom: 12px; }
+.success-screen p { color: var(--muted); font-size: 0.95rem; max-width: 480px; margin: 0 auto 24px; line-height: 1.7; }
+.solicitud-num { display: inline-block; background: var(--navy); color: var(--gold); font-family: monospace; font-size: 1.1rem; padding: 8px 24px; border-radius: 8px; margin: 16px 0; }
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .type-selector { grid-template-columns: 1fr; }
+  .card-body { padding: 20px; }
+  .card-header { padding: 20px; }
+}
+
+/* LOADING */
+.loading-overlay { position: fixed; inset: 0; background: rgba(10,22,40,0.7); display: flex; align-items: center; justify-content: center; z-index: 999; display: none; }
+.spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.field-error { border-color: var(--red) !important; }
+.error-msg { font-size: 0.78rem; color: var(--red); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-badge"><img src="logo.png" alt="May's Zona Libre"></div>
+    <div class="logo-text">
+      <div class="sub" id="header-subtitle">Solicitud de Apertura de Crédito</div>
+    </div>
+    <div style="margin-left:auto">
+      <button onclick="toggleLang()" id="lang-btn" style="background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.4);color:#fff;border-radius:20px;padding:6px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.2s">🌐 EN</button>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-inner">
+      <div class="progress-steps" id="progressSteps"></div>
+      <div class="progress-label" id="progressLabel"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="card" id="mainCard">
+    <div id="stepContent"></div>
+  </div>
+</main>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<!-- MODAL: CÓDIGO GUARDADO -->
+<div id="draftSavedModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:300;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:36px 32px;max-width:420px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:fadeUp 0.2s ease">
+    <div style="font-size:2.5rem;margin-bottom:12px">✅</div>
+    <h3 style="color:#0d3d1a;font-size:1.2rem;margin-bottom:8px" id="draftSavedTitle">¡Progreso guardado!</h3>
+    <p style="color:#4a7a56;font-size:0.88rem;margin-bottom:20px" id="draftSavedMsg">Usa este código para continuar tu solicitud desde cualquier dispositivo:</p>
+    <div id="draftCodeDisplay" style="font-size:2rem;font-weight:900;letter-spacing:6px;color:#1a6b2e;background:#e8f5e9;border:2px dashed #81c784;border-radius:12px;padding:16px 24px;margin-bottom:8px"></div>
+    <p style="font-size:0.75rem;color:#6b7a8d;margin-bottom:20px" id="draftSavedHint">Anota este código o toma una captura de pantalla</p>
+    <button onclick="closeDraftSavedModal()" style="background:#1a6b2e;color:#fff;border:none;border-radius:8px;padding:11px 28px;font-size:0.95rem;font-weight:600;cursor:pointer;width:100%">Continuar llenando</button>
+  </div>
+</div>
+
+<!-- MODAL: RETOMAR CON CÓDIGO -->
+<div id="resumeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:36px 32px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:fadeUp 0.2s ease">
+    <div style="font-size:2rem;margin-bottom:10px;text-align:center">📋</div>
+    <h3 id="resumeTitle" style="color:#0d3d1a;font-size:1.1rem;margin-bottom:6px;text-align:center">¿Tienes un código de solicitud?</h3>
+    <p id="resumeMsg" style="color:#4a7a56;font-size:0.85rem;margin-bottom:20px;text-align:center">Ingresa tu código para continuar donde lo dejaste</p>
+    <input id="resumeCodeInput" type="text" maxlength="7" placeholder="Ej: ABC-123"
+      style="width:100%;border:2px solid #c8e6c9;border-radius:10px;padding:13px 16px;font-size:1.2rem;font-weight:700;letter-spacing:4px;text-align:center;text-transform:uppercase;margin-bottom:10px;font-family:inherit"
+      oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'')" onkeydown="if(event.key==='Enter')doResume()">
+    <div id="resumeError" style="color:#e74c3c;font-size:0.8rem;margin-bottom:10px;display:none;text-align:center">Código no encontrado. Verifica e intenta de nuevo.</div>
+    <button onclick="doResume()" style="background:#1a6b2e;color:#fff;border:none;border-radius:8px;padding:12px;font-size:0.95rem;font-weight:600;cursor:pointer;width:100%;margin-bottom:10px" id="resumeBtn">Continuar solicitud</button>
+    <button onclick="closeResumeModal()" style="background:none;border:none;color:#6b7a8d;font-size:0.85rem;cursor:pointer;width:100%">Comenzar nueva solicitud</button>
+  </div>
+</div>
+
+<script>
+// ── BILINGUAL SYSTEM ─────────────────────────────────────────────────────────
+let currentLang = 'es';
+
+const TR = {
+  es: {
+    // Header
+    subtitle: 'Solicitud de Apertura de Crédito',
+    lang_btn: '🌐 EN',
+    // Steps
+    steps: ['Tipo de Solicitante','Información General','Datos de Empresa','Representante / Dueño','Contacto','Declaración PEP','Crédito','Ref. Bancarias','Ref. Comerciales','Contactos Empresa','Info. Adicional','Declaración Jurada','Documentos','Revisión'],
+    // Nav
+    next: 'Continuar →', back: '← Anterior', submit: '📤 Enviar Solicitud',
+    // Step 1
+    s1_title: 'Tipo de Solicitante', s1_sub: 'Seleccione si aplica como persona natural o empresa',
+    natural_name: 'Persona Natural', natural_desc: 'Individuo que solicita crédito a título personal',
+    juridica_name: 'Persona Jurídica', juridica_desc: 'Empresa, sociedad o entidad legal registrada',
+    // Step 2 Natural
+    s2n_title: 'Información General — Persona Natural', s2n_sub: 'Complete sus datos personales',
+    personal_data: 'Datos Personales',
+    first_name: 'Primer Nombre', middle_name: 'Segundo Nombre', last_name: 'Apellido Paterno',
+    mothers_last: 'Apellido Materno', married_name: 'Apellido de Casada', dob: 'Fecha de Nacimiento',
+    nationality: 'Nacionalidad', gender: 'Género', marital: 'Estado Civil', country_res: 'País de Residencia',
+    gender_m: 'Masculino', gender_f: 'Femenino', gender_o: 'Otro',
+    single: 'Soltero/a', married: 'Casado/a', divorced: 'Divorciado/a', widowed: 'Viudo/a', union: 'Unión libre',
+    select: '-- Seleccionar --',
+    id_section: 'Identificación', id_no: 'No. de Cédula / ID', id_exp: 'Fecha de Vencimiento Cédula',
+    passport_no: 'No. de Pasaporte', passport_exp: 'Fecha de Vencimiento Pasaporte',
+    upload_id: '📎 Subir Copia de Cédula / Pasaporte', upload_id_hint: 'PDF, JPG, PNG (máx 10MB)',
+    occupation_section: 'Ocupación / Ingresos', occupation: 'Profesión u Ocupación',
+    tax_country: 'País de Tributación', tax_id: 'No. de Identificación Tributaria',
+    funds_origin: 'Procedencia del Efectivo',
+    salary: 'Salario', inheritance: 'Herencia', gambling: 'Juegos de Azar', own_biz: 'Negocio Propio',
+    other_specify: 'Otro (especificar)',
+    // Step 2 Juridica
+    s2j_title: 'Información General — Persona Jurídica', s2j_sub: 'Datos de la empresa solicitante',
+    company_data: 'Datos de la Empresa',
+    legal_name: 'Nombre Legal de la Empresa', commercial_name: 'Nombre Comercial',
+    biz_type: 'Tipo de Empresa', ruc: 'No. de Identificación (RUC)',
+    country_const: 'País de Constitución', date_const: 'Fecha de Constitución',
+    op_notice: 'No. Aviso de Operación', reg_data: 'Datos de Inscripción',
+    activity: 'Actividad a la que se dedica', company_addr: 'Dirección de la Empresa',
+    biz_types: ['Sociedad Anónima','Sociedad de Responsabilidad Limitada','Fundación de Interés Privado (FIP)','Sociedad Civil','Sociedad Sin Fines de Lucro','Otra'],
+    company_contact: 'Contacto de la Empresa', phone: 'Teléfono', fax: 'Fax', zip: 'Apartado / ZIP',
+    email: 'Correo Electrónico', website: 'Página Web',
+    tax_section: 'País de Tributación',
+    upload_company: '📎 Documento de Registro / Constitución de la Empresa',
+    upload_company_hint: 'Pacto Social, Certificado de Registro Público, o documento donde consten los accionistas',
+    upload_company_label: 'Subir documento legal de la empresa — PDF, JPG, PNG, DOC (máx 10MB)',
+    upload_ids_rep: '📎 Copia de Identificación del Representante Legal y Accionistas',
+    upload_ids_rep_label: 'Cédula o pasaporte de cada persona — PDF, JPG, PNG (máx 10MB)',
+    company_docs: 'Documentos de la Empresa',
+    // Step 3 empresa
+    s3_title: 'Información Adicional de Empresa', s3_sub: 'Descripción del negocio e información financiera',
+    biz_type_label: 'Tipo de Negocio', merch_type: 'Tipo de Mercadería',
+    biz_types_check: ['Cadena / Chain Store','Distribuidor / Supplier','Mercado Medio / Mid Market','Hipermercado / Hyper Market','Tienda Detal / Retail Store','Comercio Electrónico / E-Commerce','Otro'],
+    merch_types: ['Ropa / Clothing','Hogar / Home','Electrodomésticos','Juguetería / Toys','Navidad / Christmas','Calzados / Shoes','Muebles / Furniture','Otros'],
+    biz_details: 'Datos del Negocio', num_employees: 'No. de Empleados',
+    emp_opts: ['Menos de 10','10 a 100','100 a 500','Más de 500'],
+    num_stores: 'Número de Almacenes/Tiendas', avg_size: 'Tamaño Promedio',
+    size_opts: ['Menos de 200 M²','201 a 500 M²','Más de 500 M²'],
+    annual_sales: 'Ventas Totales Anuales (US$)',
+    sales_opts: ['0 – 100,000','100,000 – 500,000','500,000 – 2MM','2MM o más'],
+    cash_pct: '% de Ventas en Efectivo', credit_type: 'Especifique el tipo de crédito que otorga',
+    biz_desc: 'Descripción de la estructura física del negocio',
+    biz_desc_hint: 'Estructura física, ubicación, sucursales, bodegas...',
+    time_in_biz: '¿Cuánto tiempo en este negocio?', other_biz: '¿Otros negocios del solicitante?',
+    // Step 4 representante
+    s4j_title: 'Representante Legal y Dueño', s4j_sub: 'Información del representante legal y dueño de la empresa',
+    s4n_title: 'Dirección y Datos de Trabajo', s4n_sub: 'Datos de contacto y residencia',
+    legal_rep: 'Representante Legal', owner: 'Dueño / Owner',
+    full_name: 'Nombre Completo', id_label: 'Identificación / ID', id_exp_label: 'Fecha Venc. Identificación',
+    address: 'Dirección', tel: 'Teléfono', email_label: 'Correo Electrónico',
+    home_addr: 'Dirección Residencial', home_zip: 'Apartado / ZIP', home_tel: 'Teléfono Residencial',
+    work_section: 'Datos de Trabajo', work_addr: 'Dirección de Trabajo',
+    work_tel: 'Teléfono de Trabajo', mobile: 'Teléfono Móvil',
+    // Step 5 contacto
+    s5_title: 'Información de Contacto', s5_sub: 'Datos de comunicación principal',
+    res_tel: 'Teléfono Residencial', work_tel2: 'Teléfono de Trabajo',
+    upload_address: '📎 Comprobante de Dirección',
+    upload_address_hint: 'Recibo de luz, agua, teléfono o gas (no mayor a 3 meses)',
+    upload_address_label: 'Subir recibo de servicios básicos — PDF, JPG, PNG (máx 10MB)',
+    // Step 6 PEP
+    s6_title: 'Declaración PEP', s6_sub: 'Persona Expuesta Políticamente',
+    pep_desc: '¿Qué es una PEP? Son personas nacionales o extranjeras que cumplen funciones públicas destacadas de alto nivel o con mando en el Estado: jefes de Estado o gobierno, políticos de alto perfil, funcionarios gubernamentales, judiciales o militares de alta jerarquía, ejecutivos de empresas estatales, funcionarios en posiciones de elección popular, y miembros de alta gerencia de organizaciones institucionales.',
+    pep_question: '¿Es usted una Persona Políticamente Expuesta?',
+    yes: 'Sí / Yes', no: 'No / No',
+    current_position: 'Cargo Actual', prev_position: 'Cargo Anterior',
+    date_current: 'Fecha (cargo actual)', date_prev: 'Fecha (cargo anterior)',
+    if_applies: 'Si aplica...',
+    // Step 7 credito
+    s7_title: 'Solicitud de Crédito', s7_sub: 'Condiciones y forma de pago',
+    credit_limit: 'Límite de Crédito Solicitado (US$)', payment_cond: 'Condición de Pago',
+    pay_opts: ['30 días','45 días','60 días','90 días','Otro'],
+    pay_against: 'Pagará Contra', invoice: 'Factura / Invoice', down_pmt: 'Abono / Down Payment',
+    pay_method: 'Forma de Pago',
+    cash: 'Efectivo / Cash', check: 'Cheque / Check', wire: 'Transferencia / W/T',
+    card: 'Tarjeta / Card', others: 'Otros / Others',
+    // Step 8 bancarias
+    s8_title: 'Referencias Bancarias', s8_sub: 'Proporcione información de al menos 2 bancos (requerido)',
+    bank: 'Banco', inst_name: 'Nombre de la Institución', checking: 'No. de Cuenta Cheques',
+    city: 'Ciudad', country: 'País', tel_label: 'Teléfono',
+    upload_bank_letter: '📎 Carta de Referencia Bancaria',
+    upload_bank_hint: 'Subir carta emitida por el banco — PDF, JPG, PNG, DOC (máx 10MB)',
+    // Step 9 comerciales
+    s9_title: 'Referencias Comerciales', s9_sub: 'Proporcione información de hasta 3 referencias comerciales',
+    ref: 'Referencia Comercial', company_name: 'Nombre de la Compañía',
+    contact_name: 'Nombre del Contacto', cell: 'Celular', since: 'Cuenta abierta desde',
+    credit_lim: 'Límite de Crédito (US$)', current_bal: 'Saldo Actual (US$)',
+    upload_com_letter: '📎 Carta de Referencia Comercial',
+    upload_com_hint: 'Subir carta de referencia comercial — PDF, JPG, PNG, DOC (máx 10MB)',
+    // Step 10 contactos empresa
+    s10_title: 'Contactos de su Empresa', s10_sub: 'Personas de contacto por área (Finanzas, Compras, Importación)',
+    areas: ['Finanzas / Finance','Compras / Purchases','Importación / Imports'],
+    position: 'Cargo',
+    // Step 11 adicional
+    s11_title: 'Información Adicional', s11_sub: 'Detalles complementarios de su negocio',
+    // Step 12 declaracion
+    s12_title: 'Declaración Jurada', s12_sub: 'Información de beneficiarios reales y accionistas',
+    pep_law: 'Esta declaración es requerida por la Ley 23 de 27 de abril de 2015 sobre prevención de Blanqueo de Capitales y Financiamiento del Terrorismo.',
+    shareholders_es: 'Accionistas / Beneficiarios Reales (Declaración Jurada Español)',
+    shareholders_en: 'Shareholders (Sworn Declaration English)',
+    add_shareholder_es: '+ Agregar Accionista', add_shareholder_en: '+ Add Shareholder',
+    signer_data: 'Datos del Firmante', signer_name: 'Nombre del Firmante',
+    signer_pos: 'Cargo', file_no: 'No. Expediente / File', roll: 'Rollo / Document', image: 'Imagen / Entry',
+    signer_opts: ['Presidente','Secretario','Representante Legal','Director'],
+    nat_decl: 'Declaro que la información proporcionada es completa y verídica, y autorizo a MAY\'S ZONA LIBRE, S.A. a verificar la misma con las instituciones financieras y comerciales indicadas.',
+    signer_full: 'Nombre completo del firmante',
+    terms: 'Certifico que la información aquí incluida es completa y verídica. Autorizo a MAY\'S ZONA LIBRE, S.A. a efectuar consultas a entidades bancarias y empresas de negocio respecto a las referencias proporcionadas.',
+    terms_en: 'I hereby certify that the information contained herein is complete and accurate and authorize MAY\'S ZONA LIBRE, S.A. to make inquiries into the banking and business references provided.',
+    // Step 13 documentos
+    s13_title: 'Documentos Requeridos', s13_sub: 'Cargue los documentos necesarios para completar su solicitud',
+    docs_note: 'Documentos aceptados: PDF, JPG, PNG, DOC, DOCX — máximo 10MB por archivo.',
+    id_section2: 'Identificación',
+    drag_drop: 'Arrastra archivos aquí o haz clic para seleccionar',
+    // Step 14 resumen
+    s14_title: 'Revisión de Solicitud', s14_sub: 'Verifique su información antes de enviar',
+    summary_ready: '✅ Ha completado todos los pasos. Revise la información antes de enviar su solicitud.',
+    summary_title: 'Resumen de Solicitud',
+    docs_loaded: 'Documentos Cargados',
+    no_docs: 'No se han cargado documentos',
+    docs_warn: '⚠️ Recuerde que los documentos son requeridos para procesar su solicitud.',
+    legal_notice: 'Al enviar esta solicitud, usted autoriza a MAY\'S ZONA LIBRE, S.A. (Apartado Postal 0302-00493, Zona Libre de Colón, Tel: (507) 433-9900) a efectuar consultas a entidades bancarias y empresas de negocio respecto a las referencias proporcionadas, conforme a la Ley 23 de 2015.',
+    // Row labels summary
+    r_type: 'Tipo de Solicitante', r_name: 'Nombre / Empresa', r_ruc: 'RUC', r_id: 'Cédula / ID',
+    r_nationality: 'Nacionalidad', r_country: 'País de Constitución', r_email: 'Correo Electrónico',
+    r_mobile: 'Teléfono Móvil', r_limit: 'Límite de Crédito Solicitado', r_condition: 'Condición de Pago',
+    r_pay_method: 'Forma de Pago', r_pep: 'Persona Políticamente Expuesta',
+    r_rep: 'Representante Legal', r_shareholders: 'No. Accionistas',
+    // Success
+    success_title: '¡Solicitud Enviada!',
+    success_msg: 'Su solicitud de crédito ha sido recibida exitosamente por MAY\'S ZONA LIBRE, S.A. Nuestro equipo la revisará a la brevedad.',
+    success_keep: 'Guarde este número de solicitud para dar seguimiento.',
+    success_contact: 'Contacto',
+    new_request: 'Nueva Solicitud',
+    // Types
+    juridica_label: 'Persona Jurídica', natural_label: 'Persona Natural',
+    step_label: 'Paso',
+    of: 'de',
+  },
+  en: {
+    subtitle: 'Credit Account Opening Application',
+    lang_btn: '🌐 ES',
+    steps: ['Applicant Type','General Information','Company Details','Representative / Owner','Contact','PEP Declaration','Credit','Bank References','Commercial References','Company Contacts','Additional Info','Sworn Declaration','Documents','Review'],
+    next: 'Continue →', back: '← Previous', submit: '📤 Submit Application',
+    s1_title: 'Applicant Type', s1_sub: 'Select whether you apply as an individual or a company',
+    natural_name: 'Individual', natural_desc: 'Person applying for credit on a personal basis',
+    juridica_name: 'Legal Entity', juridica_desc: 'Registered company, corporation or legal entity',
+    personal_data: 'Personal Data',
+    first_name: 'First Name', middle_name: 'Middle Name', last_name: 'Last Name',
+    mothers_last: "Mother's Last Name", married_name: 'Married Name', dob: 'Date of Birth',
+    nationality: 'Nationality', gender: 'Gender', marital: 'Marital Status', country_res: 'Country of Residence',
+    gender_m: 'Male', gender_f: 'Female', gender_o: 'Other',
+    single: 'Single', married: 'Married', divorced: 'Divorced', widowed: 'Widowed', union: 'Common Law',
+    select: '-- Select --',
+    id_section: 'Identification', id_no: 'ID / Passport No.', id_exp: 'ID Expiration Date',
+    passport_no: 'Passport No.', passport_exp: 'Passport Expiration Date',
+    upload_id: '📎 Upload ID / Passport Copy', upload_id_hint: 'PDF, JPG, PNG (max 10MB)',
+    occupation_section: 'Occupation / Income', occupation: 'Profession or Occupation',
+    tax_country: 'Country of Taxation', tax_id: 'Tax ID Number',
+    funds_origin: 'Source of Funds',
+    salary: 'Salary', inheritance: 'Inheritance', gambling: 'Gambling', own_biz: 'Own Business',
+    other_specify: 'Other (specify)',
+    s2j_title: 'General Information — Legal Entity', s2j_sub: 'Company applicant details',
+    company_data: 'Company Data',
+    legal_name: 'Legal Company Name', commercial_name: 'Commercial Name',
+    biz_type: 'Business Type', ruc: 'ID No. (RUC)',
+    country_const: 'Country of Incorporation', date_const: 'Date of Incorporation',
+    op_notice: 'Operation Notice No.', reg_data: 'Registration Data',
+    activity: 'Business Activity', company_addr: 'Company Address',
+    biz_types: ['Corporation (S.A.)','Limited Liability Company','Private Interest Foundation','Civil Society','Non-Profit Organization','Other'],
+    company_contact: 'Company Contact', phone: 'Phone', fax: 'Fax', zip: 'ZIP / P.O. Box',
+    email: 'Email', website: 'Website',
+    tax_section: 'Country of Taxation',
+    upload_company: '📎 Company Registration / Incorporation Document',
+    upload_company_hint: 'Articles of Incorporation, Public Registry Certificate, or document showing shareholders',
+    upload_company_label: 'Upload legal company document — PDF, JPG, PNG, DOC (max 10MB)',
+    upload_ids_rep: '📎 ID Copy of Legal Representative and Shareholders',
+    upload_ids_rep_label: "ID or passport of each person — PDF, JPG, PNG (max 10MB)",
+    company_docs: 'Company Documents',
+    s3_title: 'Additional Company Information', s3_sub: 'Business description and financial information',
+    biz_type_label: 'Type of Business', merch_type: 'Type of Merchandise',
+    biz_types_check: ['Chain Store','Supplier / Distributor','Mid Market','Hyper Market','Retail Store','E-Commerce','Other'],
+    merch_types: ['Clothing','Home','Home Appliances','Toys','Christmas','Shoes','Furniture','Others'],
+    biz_details: 'Business Details', num_employees: 'Number of Employees',
+    emp_opts: ['Less than 10','10 to 100','100 to 500','More than 500'],
+    num_stores: 'Number of Stores / Warehouses', avg_size: 'Average Store Size',
+    size_opts: ['Less than 200 M²','201 to 500 M²','More than 500 M²'],
+    annual_sales: 'Total Annual Sales (US$)',
+    sales_opts: ['0 – 100,000','100,000 – 500,000','500,000 – 2MM','2MM or more'],
+    cash_pct: '% of Cash Sales', credit_type: 'Specify the type of credit arrangements you provide',
+    biz_desc: 'Brief description of your business (physical structure, location, branches, warehouses)',
+    biz_desc_hint: 'Physical structure, location, branches, warehouses...',
+    time_in_biz: 'How long have you been in this business?', other_biz: 'What other businesses do you have?',
+    s4j_title: 'Legal Representative and Owner', s4j_sub: 'Information about the legal representative and owner',
+    s4n_title: 'Address and Work Information', s4n_sub: 'Contact and residence details',
+    legal_rep: 'Legal Representative', owner: 'Owner',
+    full_name: 'Full Name', id_label: 'Identification / ID', id_exp_label: 'ID Expiration Date',
+    address: 'Address', tel: 'Phone', email_label: 'Email',
+    home_addr: 'Home Address', home_zip: 'ZIP / P.O. Box', home_tel: 'Home Phone',
+    work_section: 'Work Details', work_addr: 'Work Address',
+    work_tel: 'Work Phone', mobile: 'Mobile Phone',
+    s5_title: 'Contact Information', s5_sub: 'Main communication details',
+    res_tel: 'Home Phone', work_tel2: 'Work Phone',
+    upload_address: '📎 Proof of Address',
+    upload_address_hint: 'Utility bill (electricity, water, phone or gas) — no older than 3 months',
+    upload_address_label: 'Upload utility bill — PDF, JPG, PNG (max 10MB)',
+    s6_title: 'PEP Declaration', s6_sub: 'Politically Exposed Person',
+    pep_desc: 'What is a PEP? Persons who hold or have held prominent public functions of high level: heads of state or government, senior politicians, senior government, judicial or military officials, senior executives of state-owned companies, public officials elected by popular vote, and senior management members of institutional organizations.',
+    pep_question: 'Are you a Politically Exposed Person?',
+    yes: 'Yes', no: 'No',
+    current_position: 'Current Position', prev_position: 'Previous Position',
+    date_current: 'Date (current position)', date_prev: 'Date (previous position)',
+    if_applies: 'If applicable...',
+    s7_title: 'Credit Application', s7_sub: 'Conditions and payment methods',
+    credit_limit: 'Requested Credit Limit (US$)', payment_cond: 'Payment Condition',
+    pay_opts: ['30 days','45 days','60 days','90 days','Other'],
+    pay_against: 'Will Pay Against', invoice: 'Invoice', down_pmt: 'Down Payment',
+    pay_method: 'Methods of Payment',
+    cash: 'Cash', check: 'Check', wire: 'Wire Transfer / W/T',
+    card: 'Card / Credit Card', others: 'Others',
+    s8_title: 'Bank References', s8_sub: 'Provide information for at least 2 banks (required)',
+    bank: 'Bank', inst_name: 'Institution Name', checking: 'Checking Account No.',
+    city: 'City', country: 'Country', tel_label: 'Phone',
+    upload_bank_letter: '📎 Bank Reference Letter',
+    upload_bank_hint: 'Upload letter issued by the bank — PDF, JPG, PNG, DOC (max 10MB)',
+    s9_title: 'Commercial References', s9_sub: 'Provide information for up to 3 commercial references',
+    ref: 'Commercial Reference', company_name: 'Company Name',
+    contact_name: 'Contact Name', cell: 'Cell Phone', since: 'Account Opened Since',
+    credit_lim: 'Credit Limit (US$)', current_bal: 'Current Balance (US$)',
+    upload_com_letter: '📎 Commercial Reference Letter',
+    upload_com_hint: 'Upload commercial reference letter — PDF, JPG, PNG, DOC (max 10MB)',
+    s10_title: 'Company Contacts', s10_sub: 'Contact persons by department (Finance, Purchases, Imports)',
+    areas: ['Finance','Purchases','Imports'],
+    position: 'Position',
+    s11_title: 'Additional Information', s11_sub: 'Additional business details',
+    s12_title: 'Sworn Declaration', s12_sub: 'Information on real beneficiaries and shareholders',
+    pep_law: 'This declaration is required by Law 23 of April 27, 2015 on prevention of Money Laundering and Terrorism Financing.',
+    shareholders_es: 'Shareholders / Real Beneficiaries (Spanish Sworn Declaration)',
+    shareholders_en: 'Shareholders (English Sworn Declaration)',
+    add_shareholder_es: '+ Add Shareholder', add_shareholder_en: '+ Add Shareholder',
+    signer_data: 'Signatory Information', signer_name: "Signatory's Full Name",
+    signer_pos: 'Position', file_no: 'File / Volume No.', roll: 'Roll / Document', image: 'Image / Entry',
+    signer_opts: ['President','Secretary','Legal Representative','Director'],
+    nat_decl: "I declare that the information provided is complete and accurate, and I authorize MAY'S ZONA LIBRE, S.A. to verify the same with the financial and commercial institutions listed.",
+    signer_full: "Signatory's full name",
+    terms: "I hereby certify that the information contained herein is complete and accurate. I authorize MAY'S ZONA LIBRE, S.A. to make inquiries into the banking and business references provided.",
+    terms_en: 'Certifico que la información aquí incluida es completa y verídica. Autorizo a MAY\'S ZONA LIBRE, S.A. a efectuar consultas a entidades bancarias y empresas de negocio respecto a las referencias proporcionadas.',
+    s13_title: 'Required Documents', s13_sub: 'Upload the documents needed to complete your application',
+    docs_note: 'Accepted formats: PDF, JPG, PNG, DOC, DOCX — maximum 10MB per file.',
+    id_section2: 'Identification',
+    drag_drop: 'Drag files here or click to select',
+    s14_title: 'Application Review', s14_sub: 'Verify your information before submitting',
+    summary_ready: '✅ You have completed all steps. Please review your information before submitting.',
+    summary_title: 'Application Summary',
+    docs_loaded: 'Uploaded Documents',
+    no_docs: 'No documents have been uploaded',
+    docs_warn: '⚠️ Remember that documents are required to process your application.',
+    legal_notice: "By submitting this application, you authorize MAY'S ZONA LIBRE, S.A. (P.O. Box 0302-00493, Colón Free Zone, Tel: (507) 433-9900) to make inquiries into the banking and business references provided, pursuant to Law 23 of 2015.",
+    r_type: 'Applicant Type', r_name: 'Name / Company', r_ruc: 'RUC', r_id: 'ID / Passport',
+    r_nationality: 'Nationality', r_country: 'Country of Incorporation', r_email: 'Email',
+    r_mobile: 'Mobile Phone', r_limit: 'Requested Credit Limit', r_condition: 'Payment Condition',
+    r_pay_method: 'Payment Method', r_pep: 'Politically Exposed Person',
+    r_rep: 'Legal Representative', r_shareholders: 'No. of Shareholders',
+    success_title: 'Application Submitted!',
+    success_msg: "Your credit application has been successfully received by MAY'S ZONA LIBRE, S.A. Our team will review it shortly.",
+    success_keep: 'Save this application number for follow-up.',
+    success_contact: 'Contact',
+    new_request: 'New Application',
+    juridica_label: 'Legal Entity', natural_label: 'Individual',
+    step_label: 'Step', of: 'of',
+    s2n_title: 'General Information — Individual', s2n_sub: 'Complete your personal details',
+  }
+};
+
+function t(key) { return TR[currentLang][key] || TR['es'][key] || key; }
+
+function toggleLang() {
+  currentLang = currentLang === 'es' ? 'en' : 'es';
+  document.getElementById('lang-btn').textContent = t('lang_btn');
+  document.getElementById('header-subtitle').textContent = t('subtitle');
+  renderStep();
+}
+// ── END BILINGUAL ─────────────────────────────────────────────────────────────
+
+const STEPS = [
+  { id: 'tipo', label: 'Tipo de Solicitante' },
+  { id: 'info_general', label: 'Información General' },
+  { id: 'empresa', label: 'Datos de Empresa' },
+  { id: 'representante', label: 'Representante / Dueño' },
+  { id: 'contacto', label: 'Contacto' },
+  { id: 'pep', label: 'Declaración PEP' },
+  { id: 'credito', label: 'Crédito' },
+  { id: 'ref_bancarias', label: 'Ref. Bancarias' },
+  { id: 'ref_comerciales', label: 'Ref. Comerciales' },
+  { id: 'contactos_empresa', label: 'Contactos Empresa' },
+  { id: 'info_adicional', label: 'Info. Adicional' },
+  { id: 'declaracion', label: 'Declaración Jurada' },
+  { id: 'documentos', label: 'Documentos' },
+  { id: 'resumen', label: 'Revisión' }
+];
+
+let currentStep = 0;
+let formData = {};
+let accionistas = [{}];
+let accionistasSworn = [{}];
+let uploadedFiles = {};
+let draftCode = null;
+
+function updateProgress() {
+  const steps = document.getElementById('progressSteps');
+  const label = document.getElementById('progressLabel');
+  const labels = t('steps');
+  steps.innerHTML = STEPS.map((s, i) => {
+    let cls = 'step-dot';
+    if (i < currentStep) cls += ' done';
+    if (i === currentStep) cls += ' active';
+    return `<div class="${cls}" title="${labels[i]}"></div>`;
+  }).join('');
+  label.textContent = `${t('step_label')} ${currentStep + 1} ${t('of')} ${STEPS.length}: ${labels[currentStep]}`;
+}
+
+function gather() {
+  const inputs = document.querySelectorAll('[data-field]');
+  inputs.forEach(el => {
+    const key = el.dataset.field;
+    if (el.type === 'checkbox') {
+      if (!formData[key]) formData[key] = [];
+      if (el.checked && !formData[key].includes(el.value)) formData[key].push(el.value);
+      else if (!el.checked) formData[key] = formData[key].filter(v => v !== el.value);
+    } else if (el.type === 'radio') {
+      if (el.checked) formData[key] = el.value;
+    } else {
+      formData[key] = el.value;
+    }
+  });
+  formData._accionistas = accionistas;
+  formData._accionistasSworn = accionistasSworn;
+}
+
+function restore() {
+  const inputs = document.querySelectorAll('[data-field]');
+  inputs.forEach(el => {
+    const key = el.dataset.field;
+    if (!formData[key] && formData[key] !== 0) return;
+    if (el.type === 'checkbox') {
+      el.checked = Array.isArray(formData[key]) && formData[key].includes(el.value);
+    } else if (el.type === 'radio') {
+      el.checked = formData[key] === el.value;
+    } else {
+      el.value = formData[key];
+    }
+  });
+}
+
+function renderStep() {
+  updateProgress();
+  const content = document.getElementById('stepContent');
+  const stepId = STEPS[currentStep].id;
+  const tipo = formData.tipo || 'natural';
+  const isJuridica = tipo === 'juridica';
+
+  const renderers = {
+    tipo: renderTipo,
+    info_general: () => isJuridica ? renderInfoEmpresa() : renderInfoNatural(),
+    empresa: () => isJuridica ? renderEmpresaDatos() : renderEmpresaSkip(),
+    representante: renderRepresentante,
+    contacto: renderContacto,
+    pep: renderPEP,
+    credito: renderCredito,
+    ref_bancarias: renderRefBancarias,
+    ref_comerciales: renderRefComerciales,
+    contactos_empresa: renderContactosEmpresa,
+    info_adicional: renderInfoAdicional,
+    declaracion: renderDeclaracion,
+    documentos: renderDocumentos,
+    resumen: renderResumen
+  };
+
+  content.innerHTML = renderers[stepId]();
+  restore();
+  addFileListeners();
+
+  content.querySelectorAll('.add-accionista').forEach(btn => {
+    btn.addEventListener('click', () => {
+      gather();
+      accionistas.push({});
+      renderStep();
+    });
+  });
+  content.querySelectorAll('.remove-accionista').forEach(btn => {
+    btn.addEventListener('click', () => {
+      gather();
+      const idx = parseInt(btn.dataset.idx);
+      accionistas.splice(idx, 1);
+      if (accionistas.length === 0) accionistas = [{}];
+      renderStep();
+    });
+  });
+  content.querySelectorAll('.add-accionista-sworn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      gather();
+      accionistasSworn.push({});
+      renderStep();
+    });
+  });
+  content.querySelectorAll('.remove-accionista-sworn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      gather();
+      const idx = parseInt(btn.dataset.idx);
+      accionistasSworn.splice(idx, 1);
+      if (accionistasSworn.length === 0) accionistasSworn = [{}];
+      renderStep();
+    });
+  });
+
+  content.querySelectorAll('.type-card').forEach(card => {
+    card.addEventListener('click', () => {
+      content.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const input = card.querySelector('input[type=radio]');
+      if (input) { input.checked = true; formData.tipo = input.value; }
+    });
+    const input = card.querySelector('input[type=radio]');
+    if (input && input.value === (formData.tipo || 'natural')) card.classList.add('selected');
+  });
+}
+
+function nav(html, hideBack) {
+  return `<div class="nav-buttons" style="flex-wrap:wrap;gap:10px">
+    ${hideBack ? '<div></div>' : `<button class="btn btn-secondary" onclick="goBack()">${t('back')}</button>`}
+    <div style="display:flex;gap:8px;margin-left:auto">
+      <button class="btn" style="background:#f0faf2;color:#1a6b2e;border:1.5px solid #c8e6c9;font-size:0.8rem" onclick="saveDraft()" title="${currentLang==='en'?'Save & continue later':'Guardar y continuar después'}">
+        💾 ${currentLang==='en'?'Save progress':'Guardar progreso'}
+      </button>
+      <button class="btn btn-primary" onclick="goNext()">${t('next')}</button>
+    </div>
+  </div>`;
+}
+
+function renderTipo() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 1</div>
+    <h2>${t('s1_title')}</h2>
+    <p>${t('s1_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div class="type-selector">
+      <div class="type-card" onclick="selectTipo('natural')">
+        <div class="type-icon">👤</div>
+        <div class="type-name">${t('natural_name')}</div>
+        <div class="type-desc">${t('natural_desc')}</div>
+        <input type="radio" name="tipo" value="natural" data-field="tipo" style="display:none">
+      </div>
+      <div class="type-card" onclick="selectTipo('juridica')">
+        <div class="type-icon">🏢</div>
+        <div class="type-name">${t('juridica_name')}</div>
+        <div class="type-desc">${t('juridica_desc')}</div>
+        <input type="radio" name="tipo" value="juridica" data-field="tipo" style="display:none">
+      </div>
+    </div>
+    ${nav('', true)}
+  </div>`;
+}
+
+function selectTipo(val) {
+  formData.tipo = val;
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll(`.type-card input[value="${val}"]`).forEach(i => {
+    i.checked = true;
+    i.closest('.type-card').classList.add('selected');
+  });
+}
+
+function renderInfoNatural() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 2</div>
+    <h2>${t('s2n_title')}</h2>
+    <p>${t('s2n_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div class="section-title">${t('personal_data')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('first_name')} <span class="req">*</span></label><input type="text" data-field="primer_nombre"></div>
+      <div class="form-group"><label>${t('middle_name')}</label><input type="text" data-field="segundo_nombre"></div>
+      <div class="form-group"><label>${t('last_name')} <span class="req">*</span></label><input type="text" data-field="apellido_paterno"></div>
+      <div class="form-group"><label>${t('mothers_last')}</label><input type="text" data-field="apellido_materno"></div>
+      <div class="form-group"><label>${t('married_name')}</label><input type="text" data-field="apellido_casada"></div>
+      <div class="form-group"><label>${t('dob')} <span class="req">*</span></label><input type="date" data-field="fecha_nacimiento"></div>
+      <div class="form-group"><label>${t('nationality')} <span class="req">*</span></label><input type="text" data-field="nacionalidad"></div>
+      <div class="form-group"><label>${t('gender')}</label>
+        <select data-field="genero"><option value="">${t('select')}</option><option>${t('gender_m')}</option><option>${t('gender_f')}</option><option>${t('gender_o')}</option></select>
+      </div>
+      <div class="form-group"><label>${t('marital')}</label>
+        <select data-field="estado_civil"><option value="">${t('select')}</option><option>${t('single')}</option><option>${t('married')}</option><option>${t('divorced')}</option><option>${t('widowed')}</option><option>${t('union')}</option></select>
+      </div>
+      <div class="form-group"><label>${t('country_res')} <span class="req">*</span></label><input type="text" data-field="pais_residencia"></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('id_section')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('id_no')} <span class="req">*</span></label><input type="text" data-field="id_cedula"></div>
+      <div class="form-group"><label>${t('id_exp')}</label><input type="date" data-field="id_cedula_expira"></div>
+      <div class="form-group"><label>${t('passport_no')}</label><input type="text" data-field="pasaporte_no"></div>
+      <div class="form-group"><label>${t('passport_exp')}</label><input type="date" data-field="pasaporte_expira"></div>
+    </div>
+    <div class="form-group" style="margin-top:16px">
+      <label>${t('upload_id')} <span class="req">*</span></label>
+      <div class="file-upload-area" data-field-name="doc_identificacion">
+        <div class="upload-icon">🪪</div>
+        <div class="upload-label">${t('drag_drop')} — ${t('upload_id_hint')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+      <div class="file-list" id="files_doc_identificacion"></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('occupation_section')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('occupation')} <span class="req">*</span></label><input type="text" data-field="profesion"></div>
+      <div class="form-group"><label>${t('tax_country')}</label><input type="text" data-field="pais_tributacion"></div>
+      <div class="form-group"><label>${t('tax_id')}</label><input type="text" data-field="no_tributario"></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('funds_origin')}</div>
+    <div class="checkbox-group">
+      <label class="checkbox-item"><input type="checkbox" data-field="procedencia" value="Salario"><span>${t('salary')}</span></label>
+      <label class="checkbox-item"><input type="checkbox" data-field="procedencia" value="Herencia"><span>${t('inheritance')}</span></label>
+      <label class="checkbox-item"><input type="checkbox" data-field="procedencia" value="Juegos de Azar"><span>${t('gambling')}</span></label>
+      <label class="checkbox-item"><input type="checkbox" data-field="procedencia" value="Negocio Propio"><span>${t('own_biz')}</span></label>
+    </div>
+    <div class="form-group" style="margin-top:12px"><label>${t('other_specify')}</label><input type="text" data-field="procedencia_otro"></div>
+    ${nav('')}
+  </div>`;
+}
+
+function renderInfoEmpresa() {
+  return `<div class="card-header">
+    <div class="step-number">Paso 2</div>
+    <h2>Información General — Persona Jurídica</h2>
+    <p>Datos de la empresa solicitante</p>
+  </div>
+  <div class="card-body">
+    <div class="section-title">Datos de la Empresa</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>Nombre Legal de la Empresa <span class="req">*</span></label><input type="text" data-field="empresa_nombre_legal"></div>
+      <div class="form-group"><label>Nombre Comercial <span class="req">*</span></label><input type="text" data-field="empresa_nombre_comercial"></div>
+      <div class="form-group"><label>Tipo de Empresa</label>
+        <select data-field="empresa_tipo">
+          <option value="">-- Seleccionar --</option>
+          <option>Sociedad Anónima</option>
+          <option>Sociedad de Responsabilidad Limitada</option>
+          <option>Fundación de Interés Privado (FIP)</option>
+          <option>Sociedad Civil</option>
+          <option>Sociedad Sin Fines de Lucro</option>
+          <option>Otra</option>
+        </select>
+      </div>
+      <div class="form-group"><label>No. de Identificación (RUC) <span class="req">*</span></label><input type="text" data-field="empresa_ruc"></div>
+      <div class="form-group"><label>País de Constitución</label><input type="text" data-field="empresa_pais_constitucion"></div>
+      <div class="form-group"><label>Fecha de Constitución</label><input type="date" data-field="empresa_fecha_constitucion"></div>
+      <div class="form-group"><label>No. Aviso de Operación</label><input type="text" data-field="empresa_aviso_operacion"></div>
+      <div class="form-group"><label>Datos de Inscripción</label><input type="text" data-field="empresa_inscripcion"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Actividad a la que se dedica <span class="req">*</span></label><input type="text" data-field="empresa_actividad"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Dirección de la Empresa <span class="req">*</span></label><textarea data-field="empresa_direccion" rows="2"></textarea></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">Contacto de la Empresa</div>
+    <div class="form-grid grid-3">
+      <div class="form-group"><label>Teléfono <span class="req">*</span></label><input type="tel" data-field="empresa_telefono"></div>
+      <div class="form-group"><label>Fax</label><input type="tel" data-field="empresa_fax"></div>
+      <div class="form-group"><label>Apartado / ZIP</label><input type="text" data-field="empresa_zip"></div>
+      <div class="form-group"><label>Correo Electrónico <span class="req">*</span></label><input type="email" data-field="empresa_email"></div>
+      <div class="form-group"><label>Página Web</label><input type="url" data-field="empresa_web" placeholder="https://"></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('tax_section')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('tax_country')}</label><input type="text" data-field="pais_tributacion"></div>
+      <div class="form-group"><label>${t('tax_id')}</label><input type="text" data-field="no_tributario"></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('company_docs')}</div>
+    <div class="form-group">
+      <label>${t('upload_company')} <span class="req">*</span></label>
+      <div class="input-hint" style="margin-bottom:8px">${t('upload_company_hint')}</div>
+      <div class="file-upload-area" data-field-name="doc_empresa">
+        <div class="upload-icon">🏢</div>
+        <div class="upload-label">${t('upload_company_label')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+      </div>
+      <div class="file-list" id="files_doc_empresa"></div>
+    </div>
+    <div class="form-group" style="margin-top:14px">
+      <label>${t('upload_ids_rep')} <span class="req">*</span></label>
+      <div class="file-upload-area" data-field-name="doc_identificacion">
+        <div class="upload-icon">🪪</div>
+        <div class="upload-label">${t('upload_ids_rep_label')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+      <div class="file-list" id="files_doc_identificacion"></div>
+    </div>
+    ${nav('')}
+  </div>`;
+}
+
+function renderEmpresaDatos() {
+  return `<div class="card-header">
+    <div class="step-number">Paso 3</div>
+    <h2>Información Adicional de Empresa</h2>
+    <p>Descripción del negocio e información financiera</p>
+  </div>
+  <div class="card-body">
+    <div class="section-title">Tipo de Negocio</div>
+    <div class="checkbox-group">
+      ${['Cadena / Chain Store','Distribuidor / Supplier','Mercado Medio / Mid Market','Hipermercado / Hyper Market','Tienda Detal / Retail Store','Comercio Electrónico / E-Commerce','Otro'].map(t =>
+        `<label class="checkbox-item"><input type="checkbox" data-field="tipo_negocio" value="${t}"><span>${t}</span></label>`
+      ).join('')}
+    </div>
+    <div class="section-title" style="margin-top:24px">Tipo de Mercadería</div>
+    <div class="checkbox-group">
+      ${['Ropa / Clothing','Hogar / Home','Electrodomésticos','Juguetería / Toys','Navidad / Christmas','Calzados / Shoes','Muebles / Furniture','Otros'].map(t =>
+        `<label class="checkbox-item"><input type="checkbox" data-field="tipo_mercaderia" value="${t}"><span>${t}</span></label>`
+      ).join('')}
+    </div>
+    <div class="section-title" style="margin-top:24px">Datos del Negocio</div>
+    <div class="form-grid">
+      <div class="form-group"><label>No. de Empleados</label>
+        <select data-field="num_empleados"><option value="">-- Seleccionar --</option><option>Menos de 10</option><option>10 a 100</option><option>100 a 500</option><option>Más de 500</option></select>
+      </div>
+      <div class="form-group"><label>Número de Almacenes/Tiendas</label><input type="number" data-field="num_almacenes" min="0"></div>
+      <div class="form-group"><label>Tamaño Promedio</label>
+        <select data-field="tamano_promedio"><option value="">-- Seleccionar --</option><option>Menos de 200 M²</option><option>201 a 500 M²</option><option>Más de 500 M²</option></select>
+      </div>
+      <div class="form-group"><label>Ventas Totales Anuales (US$)</label>
+        <select data-field="ventas_anuales"><option value="">-- Seleccionar --</option><option>0 – 100,000</option><option>100,000 – 500,000</option><option>500,000 – 2MM</option><option>2MM o más</option></select>
+      </div>
+      <div class="form-group"><label>% de Ventas en Efectivo</label><input type="text" data-field="pct_ventas_efectivo" placeholder="Ej: 40%"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Especifique el tipo de crédito que otorga</label><textarea data-field="tipo_credito_otorga" rows="2"></textarea></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Descripción de la estructura física del negocio</label><textarea data-field="descripcion_negocio" rows="3" placeholder="Estructura física, ubicación, sucursales, bodegas..."></textarea></div>
+      <div class="form-group"><label>¿Cuánto tiempo en este negocio?</label><input type="text" data-field="tiempo_en_negocio" placeholder="Ej: 5 años"></div>
+      <div class="form-group"><label>¿Otros negocios del solicitante?</label><input type="text" data-field="otros_negocios"></div>
+    </div>
+    ${nav('')}
+  </div>`;
+}
+
+function renderEmpresaSkip() {
+  // Auto-skip for persona natural
+  currentStep++;
+  return renderRepresentante();
+}
+
+function renderRepresentante() {
+  const isJuridica = (formData.tipo || 'natural') === 'juridica';
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} ${isJuridica ? '4' : '3'}</div>
+    <h2>${isJuridica ? t('s4j_title') : t('s4n_title')}</h2>
+    <p>${isJuridica ? t('s4j_sub') : t('s4n_sub')}</p>
+  </div>
+  <div class="card-body">
+    ${isJuridica ? `
+    <div class="section-title">${t('legal_rep')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('full_name')} <span class="req">*</span></label><input type="text" data-field="rep_nombre"></div>
+      <div class="form-group"><label>${t('id_label')} <span class="req">*</span></label><input type="text" data-field="rep_id"></div>
+      <div class="form-group"><label>${t('id_exp_label')}</label><input type="date" data-field="rep_id_expira"></div>
+      <div class="form-group"><label>${t('nationality')}</label><input type="text" data-field="rep_nacionalidad"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>${t('address')}</label><textarea data-field="rep_direccion" rows="2"></textarea></div>
+      <div class="form-group"><label>${t('tel')}</label><input type="tel" data-field="rep_telefono"></div>
+      <div class="form-group"><label>${t('email_label')}</label><input type="email" data-field="rep_email"></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('owner')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('full_name')} <span class="req">*</span></label><input type="text" data-field="dueno_nombre"></div>
+      <div class="form-group"><label>${t('id_label')}</label><input type="text" data-field="dueno_id"></div>
+      <div class="form-group"><label>${t('id_exp_label')}</label><input type="date" data-field="dueno_id_expira"></div>
+      <div class="form-group"><label>${t('nationality')}</label><input type="text" data-field="dueno_nacionalidad"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>${t('address')}</label><textarea data-field="dueno_direccion" rows="2"></textarea></div>
+      <div class="form-group"><label>${t('tel')}</label><input type="tel" data-field="dueno_telefono"></div>
+      <div class="form-group"><label>${t('email_label')}</label><input type="email" data-field="dueno_email"></div>
+    </div>` : `
+    <div class="section-title">${t('home_addr')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group" style="grid-column:1/-1"><label>${t('home_addr')} <span class="req">*</span></label><textarea data-field="dir_residencial" rows="2"></textarea></div>
+      <div class="form-group"><label>${t('home_zip')}</label><input type="text" data-field="zip_residencial"></div>
+      <div class="form-group"><label>${t('home_tel')}</label><input type="tel" data-field="tel_residencial"></div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('work_section')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group" style="grid-column:1/-1"><label>${t('work_addr')}</label><textarea data-field="dir_trabajo" rows="2"></textarea></div>
+      <div class="form-group"><label>${t('work_tel')}</label><input type="tel" data-field="tel_trabajo"></div>
+      <div class="form-group"><label>${t('mobile')} <span class="req">*</span></label><input type="tel" data-field="tel_movil"></div>
+    </div>`}
+    ${nav('')}
+  </div>`;
+}
+
+function renderContacto() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} ${(formData.tipo||'natural')==='juridica'?'5':'4'}</div>
+    <h2>${t('s5_title')}</h2>
+    <p>${t('s5_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('mobile')} <span class="req">*</span></label><input type="tel" data-field="tel_movil" placeholder="+507 6000-0000"></div>
+      <div class="form-group"><label>${t('res_tel')}</label><input type="tel" data-field="tel_residencial"></div>
+      <div class="form-group"><label>${t('work_tel2')}</label><input type="tel" data-field="tel_trabajo"></div>
+      <div class="form-group"><label>${t('fax')}</label><input type="tel" data-field="fax"></div>
+      <div class="form-group"><label>${t('email')} <span class="req">*</span></label><input type="email" data-field="email" placeholder="correo@ejemplo.com"></div>
+      <div class="form-group"><label>${t('zip')}</label><input type="text" data-field="zip"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>${t('home_addr')} <span class="req">*</span></label><textarea data-field="dir_residencial" rows="2"></textarea></div>
+      <div class="form-group"><label>${t('work_addr')}</label><input type="text" data-field="dir_trabajo"></div>
+    </div>
+    <div class="form-group" style="margin-top:16px">
+      <label>${t('upload_address')} <span class="req">*</span></label>
+      <div class="input-hint" style="margin-bottom:8px">${t('upload_address_hint')}</div>
+      <div class="file-upload-area" data-field-name="doc_direccion">
+        <div class="upload-icon">🏠</div>
+        <div class="upload-label">${t('upload_address_label')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+      <div class="file-list" id="files_doc_direccion"></div>
+    </div>
+    ${nav('')}
+  </div>`;
+}
+
+function renderPEP() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 6</div>
+    <h2>${t('s6_title')}</h2>
+    <p>${t('s6_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div class="pep-alert"><strong>${t('s6_title')}:</strong> ${t('pep_desc')}</div>
+    <div class="section-title">${t('pep_question')}</div>
+    <div class="radio-group" style="margin-bottom:24px">
+      <label class="radio-item"><input type="radio" name="es_pep" data-field="es_pep" value="Si"><span>${t('yes')}</span></label>
+      <label class="radio-item"><input type="radio" name="es_pep" data-field="es_pep" value="No"><span>${t('no')}</span></label>
+    </div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('current_position')}</label><input type="text" data-field="pep_cargo_actual" placeholder="${t('if_applies')}"></div>
+      <div class="form-group"><label>${t('prev_position')}</label><input type="text" data-field="pep_cargo_anterior" placeholder="${t('if_applies')}"></div>
+      <div class="form-group"><label>${t('date_current')}</label><input type="date" data-field="pep_fecha_actual"></div>
+      <div class="form-group"><label>${t('date_prev')}</label><input type="date" data-field="pep_fecha_anterior"></div>
+    </div>
+    ${nav('')}
+  </div>`;
+}
+
+function renderCredito() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 7</div>
+    <h2>${t('s7_title')}</h2>
+    <p>${t('s7_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('credit_limit')} <span class="req">*</span></label><input type="number" data-field="credito_limite" placeholder="0.00" min="0" step="0.01"></div>
+      <div class="form-group"><label>${t('payment_cond')} <span class="req">*</span></label>
+        <select data-field="credito_condicion"><option value="">${t('select')}</option>${t('pay_opts').map(o=>`<option>${o}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('pay_against')}</div>
+    <div class="radio-group">
+      <label class="radio-item"><input type="radio" name="pagara_contra" data-field="pagara_contra" value="Factura"><span>${t('invoice')}</span></label>
+      <label class="radio-item"><input type="radio" name="pagara_contra" data-field="pagara_contra" value="Abono"><span>${t('down_pmt')}</span></label>
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('pay_method')}</div>
+    <div class="checkbox-group">
+      <label class="checkbox-item"><input type="checkbox" data-field="forma_pago" value="Efectivo"><span>${t('cash')}</span></label>
+      <label class="checkbox-item"><input type="checkbox" data-field="forma_pago" value="Cheque"><span>${t('check')}</span></label>
+      <label class="checkbox-item"><input type="checkbox" data-field="forma_pago" value="Transferencia"><span>${t('wire')}</span></label>
+      <label class="checkbox-item"><input type="checkbox" data-field="forma_pago" value="Tarjeta"><span>${t('card')}</span></label>
+      <label class="checkbox-item"><input type="checkbox" data-field="forma_pago" value="Otros"><span>${t('others')}</span></label>
+    </div>
+    ${nav('')}
+  </div>`;
+}
+
+function renderRefBancarias() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 8</div>
+    <h2>${t('s8_title')}</h2>
+    <p>${t('s8_sub')}</p>
+  </div>
+  <div class="card-body">
+    ${[1,2].map(n => `
+    <div class="ref-block">
+      <div class="ref-block-title">🏦 ${t('bank')} ${n}</div>
+      <div class="form-grid grid-2">
+        <div class="form-group"><label>${t('inst_name')} <span class="req">*</span></label><input type="text" data-field="banco${n}_nombre"></div>
+        <div class="form-group"><label>${t('checking')}</label><input type="text" data-field="banco${n}_cuenta"></div>
+        <div class="form-group"><label>${t('city')}</label><input type="text" data-field="banco${n}_ciudad"></div>
+        <div class="form-group"><label>${t('country')}</label><input type="text" data-field="banco${n}_pais"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>${t('address')}</label><input type="text" data-field="banco${n}_direccion"></div>
+        <div class="form-group"><label>${t('tel_label')}</label><input type="tel" data-field="banco${n}_telefono"></div>
+        <div class="form-group"><label>${t('fax')}</label><input type="tel" data-field="banco${n}_fax"></div>
+        <div class="form-group"><label>${t('zip')}</label><input type="text" data-field="banco${n}_zip"></div>
+        <div class="form-group"><label>${t('email')}</label><input type="email" data-field="banco${n}_email"></div>
+      </div>
+      <div class="form-group" style="margin-top:14px">
+        <label>${t('upload_bank_letter')} — ${t('bank')} ${n} <span class="req">*</span></label>
+        <div class="file-upload-area" data-field-name="doc_ref_bancaria_${n}">
+          <div class="upload-icon">🏦</div>
+          <div class="upload-label">${t('upload_bank_hint')}</div>
+          <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+        </div>
+        <div class="file-list" id="files_doc_ref_bancaria_${n}"></div>
+      </div>
+    </div>`).join('')}
+    ${nav('')}
+  </div>`;
+}
+
+function renderRefComerciales() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 9</div>
+    <h2>${t('s9_title')}</h2>
+    <p>${t('s9_sub')}</p>
+  </div>
+  <div class="card-body">
+    ${[1,2,3].map(n => `
+    <div class="ref-block">
+      <div class="ref-block-title">📋 ${t('ref')} ${n}</div>
+      <div class="form-grid grid-2">
+        <div class="form-group"><label>${t('company_name')} ${n===1?'<span class="req">*</span>':''}</label><input type="text" data-field="com${n}_empresa"></div>
+        <div class="form-group"><label>${t('contact_name')}</label><input type="text" data-field="com${n}_contacto"></div>
+        <div class="form-group"><label>${t('city')}</label><input type="text" data-field="com${n}_ciudad"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>${t('address')}</label><input type="text" data-field="com${n}_direccion"></div>
+        <div class="form-group"><label>${t('tel_label')}</label><input type="tel" data-field="com${n}_telefono"></div>
+        <div class="form-group"><label>${t('cell')}</label><input type="tel" data-field="com${n}_celular"></div>
+        <div class="form-group"><label>${t('fax')}</label><input type="tel" data-field="com${n}_fax"></div>
+        <div class="form-group"><label>${t('zip')}</label><input type="text" data-field="com${n}_zip"></div>
+        <div class="form-group"><label>${t('email')}</label><input type="email" data-field="com${n}_email"></div>
+        <div class="form-group"><label>${t('since')}</label><input type="date" data-field="com${n}_desde"></div>
+        <div class="form-group"><label>${t('credit_lim')}</label><input type="number" data-field="com${n}_limite" min="0"></div>
+        <div class="form-group"><label>${t('current_bal')}</label><input type="number" data-field="com${n}_saldo" min="0"></div>
+      </div>
+      <div class="form-group" style="margin-top:14px">
+        <label>${t('upload_com_letter')} — ${t('ref')} ${n} ${n===1?'<span class="req">*</span>':''}</label>
+        <div class="file-upload-area" data-field-name="doc_ref_comercial_${n}">
+          <div class="upload-icon">📋</div>
+          <div class="upload-label">${t('upload_com_hint')}</div>
+          <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+        </div>
+        <div class="file-list" id="files_doc_ref_comercial_${n}"></div>
+      </div>
+    </div>`).join('')}
+    ${nav('')}
+  </div>`;
+}
+
+function renderContactosEmpresa() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 10</div>
+    <h2>${t('s10_title')}</h2>
+    <p>${t('s10_sub')}</p>
+  </div>
+  <div class="card-body">
+    ${t('areas').map((area, i) => {
+      const k = ['fin','comp','imp'][i];
+      return `<div class="ref-block">
+        <div class="ref-block-title">${area}</div>
+        <div class="form-grid grid-2">
+          <div class="form-group"><label>${t('contact_name')}</label><input type="text" data-field="${k}_nombre"></div>
+          <div class="form-group"><label>${t('position')}</label><input type="text" data-field="${k}_cargo"></div>
+          <div class="form-group"><label>${t('tel_label')}</label><input type="tel" data-field="${k}_telefono"></div>
+          <div class="form-group"><label>${t('cell')}</label><input type="tel" data-field="${k}_celular"></div>
+          <div class="form-group"><label>${t('fax')}</label><input type="tel" data-field="${k}_fax"></div>
+          <div class="form-group"><label>${t('email')}</label><input type="email" data-field="${k}_email"></div>
+          <div class="form-group"><label>${t('zip')}</label><input type="text" data-field="${k}_zip"></div>
+        </div>
+      </div>`;
+    }).join('')}
+    ${nav('')}
+  </div>`;
+}
+
+function renderInfoAdicional() {
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 11</div>
+    <h2>${t('s11_title')}</h2>
+    <p>${t('s11_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div class="section-title">${t('biz_type_label')}</div>
+    <div class="checkbox-group">
+      ${t('biz_types_check').map(opt =>
+        `<label class="checkbox-item"><input type="checkbox" data-field="tipo_negocio" value="${opt}"><span>${opt}</span></label>`
+      ).join('')}
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('merch_type')}</div>
+    <div class="checkbox-group">
+      ${t('merch_types').map(opt =>
+        `<label class="checkbox-item"><input type="checkbox" data-field="tipo_mercaderia" value="${opt}"><span>${opt}</span></label>`
+      ).join('')}
+    </div>
+    <div class="section-title" style="margin-top:24px">${t('biz_details')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('num_employees')}</label>
+        <select data-field="num_empleados"><option value="">-- ${t('select')} --</option>${t('emp_opts').map(o=>`<option>${o}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>${t('num_stores')}</label><input type="number" data-field="num_almacenes" min="0"></div>
+      <div class="form-group"><label>${t('avg_size')}</label>
+        <select data-field="tamano_promedio"><option value="">-- ${t('select')} --</option>${t('size_opts').map(o=>`<option>${o}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>${t('annual_sales')}</label>
+        <select data-field="ventas_anuales"><option value="">-- ${t('select')} --</option>${t('sales_opts').map(o=>`<option>${o}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>${t('cash_pct')}</label><input type="text" data-field="pct_ventas_efectivo" placeholder="Ej: 40%"></div>
+      <div class="form-group"><label>${t('time_in_biz')}</label><input type="text" data-field="tiempo_en_negocio"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>${t('credit_type')}</label><textarea data-field="tipo_credito_otorga" rows="2"></textarea></div>
+      <div class="form-group" style="grid-column:1/-1"><label>${t('biz_desc')}</label><textarea data-field="descripcion_negocio" rows="3" placeholder="${t('biz_desc_hint')}"></textarea></div>
+      <div class="form-group" style="grid-column:1/-1"><label>${t('other_biz')}</label><input type="text" data-field="otros_negocios"></div>
+    </div>
+    ${nav('')}
+  </div>`;
+}
+
+function accionistaRow(a, idx, prefix, fields) {
+  return `<div class="accionista-row">
+    ${accionistas.length > 1 ? `<button class="remove-btn remove-${prefix}" data-idx="${idx}">✕</button>` : ''}
+    <div class="form-grid grid-2" style="margin-right:32px">
+      ${fields.map(f => `<div class="form-group"><label>${f.label}</label><input type="text" name="${prefix}_${idx}_${f.key}" data-acc-idx="${idx}" data-acc-field="${f.key}" data-acc-prefix="${prefix}" value="${a[f.key]||''}"></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderDeclaracion() {
+  const isJuridica = (formData.tipo || 'natural') === 'juridica';
+  const fields = [
+    {key:'nombre', label:t('full_name')},
+    {key:'nacionalidad', label:t('nationality')},
+    {key:'ocupacion', label:t('occupation')},
+    {key:'cedula', label:t('id_passport')},
+    {key:'porcentaje', label:t('percentage')},
+  ];
+  const swornFields = [
+    {key:'nombre', label:t('name')},
+    {key:'nacionalidad', label:t('nationality')},
+    {key:'otra_nacionalidad', label:t('other_nationality')},
+    {key:'pais_residencia', label:t('country_res')},
+    {key:'us_person', label:'US Person (Yes/No)'},
+    {key:'porcentaje', label:t('percentage')},
+  ];
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 12</div>
+    <h2>${t('s12_title')}</h2>
+    <p>${t('s12_sub')}</p>
+  </div>
+  <div class="card-body">
+    ${isJuridica ? `
+    <div class="pep-alert">${t('pep_law')}</div>
+    <div class="section-title">${t('shareholders_es')}</div>
+    <div id="accionistas-container">
+      ${accionistas.map((a, i) => accionistaRow(a, i, 'acc', fields)).join('')}
+    </div>
+    <button class="add-btn add-accionista">${t('add_shareholder_es')}</button>
+
+    <div class="section-title" style="margin-top:28px">${t('shareholders_en')}</div>
+    <div id="accionistas-sworn-container">
+      ${accionistasSworn.map((a, i) => accionistaRow(a, i, 'sworn', swornFields)).join('')}
+    </div>
+    <button class="add-btn add-accionista-sworn">${t('add_shareholder_en')}</button>
+
+    <div class="section-title" style="margin-top:28px">${t('signer_data')}</div>
+    <div class="form-grid grid-2">
+      <div class="form-group"><label>${t('signer_name')}</label><input type="text" data-field="declaracion_nombre_firmante"></div>
+      <div class="form-group"><label>${t('signer_pos')}</label>
+        <select data-field="declaracion_cargo_firmante"><option value="">-- ${t('select')} --</option>${t('signer_opts').map(o=>`<option>${o}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>${t('file_no')}</label><input type="text" data-field="declaracion_expediente"></div>
+      <div class="form-group"><label>${t('roll')}</label><input type="text" data-field="declaracion_rollo"></div>
+      <div class="form-group"><label>${t('image')}</label><input type="text" data-field="declaracion_imagen"></div>
+    </div>` : `
+    <div class="pep-alert">${t('terms')}</div>
+    <div class="form-grid">
+      <div class="form-group"><label>${t('signer_full')} <span class="req">*</span></label><input type="text" data-field="declaracion_nombre_firmante"></div>
+    </div>`}
+    <div class="form-group" style="margin-top:20px">
+      <label class="checkbox-item" style="align-items:flex-start; gap:10px">
+        <input type="checkbox" data-field="acepta_terminos" value="si" style="margin-top:3px; width:18px; height:18px">
+        <span style="font-size:0.88rem; line-height:1.6">${t('terms_en')}</span>
+      </label>
+    </div>
+    ${nav('')}
+  </div>`;
+}
+
+function renderDocumentos() {
+  const isJuridica = (formData.tipo || 'natural') === 'juridica';
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 13</div>
+    <h2>${t('s13_title')}</h2>
+    <p>${t('s13_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div class="pep-alert" style="background:#e8f5e9; border-color:#81c784; color:#2e7d32">
+      ${t('docs_note')}
+    </div>
+
+    <div class="section-title" style="margin-top:20px">${t('id_section2')}</div>
+    <div class="form-group">
+      <label>${t('upload_id')}${isJuridica ? ' ('+t('upload_ids_rep')+')' : ''} <span class="req">*</span></label>
+      <div class="file-upload-area" data-field-name="doc_identificacion">
+        <div class="upload-icon">📄</div>
+        <div class="upload-label">${t('drag_drop')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+      </div>
+      <div class="file-list" id="files_doc_identificacion"></div>
+    </div>
+
+    ${isJuridica ? `
+    <div class="section-title" style="margin-top:20px">${t('upload_company')}</div>
+    <div class="form-group">
+      <label>${t('upload_company_label')} <span class="req">*</span></label>
+      <div class="file-upload-area" data-field-name="doc_empresa">
+        <div class="upload-icon">🏢</div>
+        <div class="upload-label">${t('upload_company_hint')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+      </div>
+      <div class="file-list" id="files_doc_empresa"></div>
+    </div>` : ''}
+
+    <div class="section-title" style="margin-top:20px">${t('upload_address')}</div>
+    <div class="form-group">
+      <label>${t('upload_address_label')} <span class="req">*</span></label>
+      <div class="file-upload-area" data-field-name="doc_direccion">
+        <div class="upload-icon">🏠</div>
+        <div class="upload-label">${t('upload_address_hint')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+      <div class="file-list" id="files_doc_direccion"></div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px">${t('s8_title')}</div>
+    <div class="form-group">
+      <label>${t('upload_bank_letter')} <span class="req">*</span></label>
+      <div class="file-upload-area" data-field-name="doc_ref_bancaria">
+        <div class="upload-icon">🏦</div>
+        <div class="upload-label">${t('upload_bank_hint')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+      </div>
+      <div class="file-list" id="files_doc_ref_bancaria"></div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px">${t('s9_title')}</div>
+    <div class="form-group">
+      <label>${t('upload_com_letter')} <span class="req">*</span></label>
+      <div class="file-upload-area" data-field-name="doc_ref_comercial">
+        <div class="upload-icon">📋</div>
+        <div class="upload-label">${t('upload_com_hint')}</div>
+        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+      </div>
+      <div class="file-list" id="files_doc_ref_comercial"></div>
+    </div>
+
+    ${nav('')}
+  </div>`;
+}
+
+function renderResumen() {
+  const tipo = formData.tipo === 'juridica' ? t('juridica_label') : t('natural_label');
+  const nombre = formData.tipo === 'juridica'
+    ? (formData.empresa_nombre_legal || formData.empresa_nombre_comercial || '—')
+    : [formData.primer_nombre, formData.apellido_paterno].filter(Boolean).join(' ') || '—';
+
+  const row = (label, value) => value
+    ? `<tr><td style="padding:7px 12px; color:#6b7a8d; font-size:0.82rem; width:40%; border-bottom:1px solid #f0f0f0">${label}</td><td style="padding:7px 12px; font-size:0.88rem; border-bottom:1px solid #f0f0f0">${value}</td></tr>`
+    : '';
+
+  const table = (rows) => `<table style="width:100%; border-collapse:collapse; background:#fafbfc; border-radius:8px; overflow:hidden; border:1px solid #e8ecf0">${rows}</table>`;
+
+  const isJ = formData.tipo === 'juridica';
+  const docsCount = Object.values(uploadedFiles).reduce((sum, arr) => sum + arr.length, 0);
+
+  return `<div class="card-header">
+    <div class="step-number">${t('step_label')} 14</div>
+    <h2>${t('s14_title')}</h2>
+    <p>${t('s14_sub')}</p>
+  </div>
+  <div class="card-body">
+    <div style="background:#e8f5e9; border:1px solid #81c784; border-radius:8px; padding:14px 18px; margin-bottom:24px; font-size:0.88rem; color:#2e7d32">
+      ${t('summary_ready')}
+    </div>
+
+    <div class="section-title">${t('summary_title')}</div>
+    ${table(`
+      ${row(t('r_type'), tipo)}
+      ${row(t('r_name'), nombre)}
+      ${isJ ? row(t('r_ruc'), formData.empresa_ruc) : row(t('r_id'), formData.id_cedula)}
+      ${isJ ? row(t('r_country'), formData.empresa_pais_constitucion) : row(t('r_nationality'), formData.nacionalidad)}
+      ${row(t('r_email'), formData.email || formData.empresa_email)}
+      ${row(t('r_mobile'), formData.tel_movil || formData.empresa_telefono)}
+      ${row(t('r_limit'), formData.credito_limite ? 'US$ ' + Number(formData.credito_limite).toLocaleString() : '—')}
+      ${row(t('r_condition'), formData.credito_condicion)}
+      ${row(t('r_pay_method'), Array.isArray(formData.forma_pago) ? formData.forma_pago.join(', ') : formData.forma_pago)}
+      ${row(t('r_pep'), formData.es_pep)}
+      ${isJ ? row(t('r_rep'), formData.rep_nombre) : ''}
+      ${isJ ? row(t('r_shareholders'), accionistas.length) : ''}
+    `)}
+
+    <div class="section-title" style="margin-top:24px">${t('docs_loaded')}</div>
+    <div style="background:#fafbfc; border:1px solid #e8ecf0; border-radius:8px; padding:16px; font-size:0.88rem">
+      ${docsCount > 0
+        ? Object.entries(uploadedFiles).map(([field, files]) =>
+            files.map(f => `<div style="display:flex; align-items:center; gap:8px; padding:4px 0"><span>📎</span><span>${f.name}</span></div>`).join('')
+          ).join('')
+        : `<span style="color:#6b7a8d">${t('no_docs')}</span>`
+      }
+      ${docsCount === 0 ? `<div style="color:#e74c3c; margin-top:8px; font-size:0.8rem">${t('docs_warn')}</div>` : ''}
+    </div>
+
+    <div style="background:#fff8e1; border:1px solid #f0c040; border-radius:8px; padding:16px; margin-top:20px; font-size:0.82rem; color:#7a5c00; line-height:1.7">
+      ${t('legal_notice')}
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goBack()">&#8592; ${t('back')}</button>
+      <button class="btn btn-success" onclick="submitForm()" style="font-size:1rem; padding:14px 36px">
+        📤 ${t('submit')}
+      </button>
+    </div>
+  </div>`;
+}
+
+function addFileListeners() {
+  document.querySelectorAll('.file-upload-area').forEach(area => {
+    const fieldName = area.dataset.fieldName;
+    const input = area.querySelector('input[type=file]');
+    const listEl = document.getElementById('files_' + fieldName);
+    if (!input || !listEl) return;
+
+    if (!uploadedFiles[fieldName]) uploadedFiles[fieldName] = [];
+
+    const renderList = () => {
+      listEl.innerHTML = uploadedFiles[fieldName].map((f, i) =>
+        `<div class="file-tag">📎 ${f.name} <button onclick="removeFile('${fieldName}',${i})" title="Quitar">✕</button></div>`
+      ).join('');
+    };
+    renderList();
+
+    input.addEventListener('change', () => {
+      Array.from(input.files).forEach(f => {
+        if (!uploadedFiles[fieldName].find(x => x.name === f.name)) {
+          uploadedFiles[fieldName].push(f);
+        }
+      });
+      renderList();
+      input.value = '';
+    });
+  });
+}
+
+window.removeFile = function(field, idx) {
+  uploadedFiles[field].splice(idx, 1);
+  const listEl = document.getElementById('files_' + field);
+  if (listEl) {
+    listEl.innerHTML = uploadedFiles[field].map((f, i) =>
+      `<div class="file-tag">📎 ${f.name} <button onclick="removeFile('${field}',${i})" title="Quitar">✕</button></div>`
+    ).join('');
+  }
+};
+
+function collectAccionistas(prefix) {
+  const result = [];
+  document.querySelectorAll(`[data-acc-prefix="${prefix}"]`).forEach(el => {
+    const idx = parseInt(el.dataset.accIdx);
+    if (!result[idx]) result[idx] = {};
+    result[idx][el.dataset.accField] = el.value;
+  });
+  return result.filter(Boolean);
+}
+
+function validate() {
+  const stepId = STEPS[currentStep].id;
+  const required = document.querySelectorAll('[data-field]');
+  let ok = true;
+  // minimal required check for key steps
+  if (stepId === 'tipo' && !formData.tipo) {
+    alert('Por favor seleccione el tipo de solicitante.');
+    return false;
+  }
+  return ok;
+}
+
+function goNext() {
+  gather();
+  if (STEPS[currentStep].id === 'empresa' && (formData.tipo||'natural') === 'natural') {
+    currentStep += 2;
+  } else {
+    currentStep++;
+  }
+  if (currentStep >= STEPS.length) currentStep = STEPS.length - 1;
+  saveDraftSilent();
+  renderStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  gather();
+  currentStep--;
+  if (STEPS[currentStep].id === 'empresa' && (formData.tipo||'natural') === 'natural') currentStep--;
+  if (currentStep < 0) currentStep = 0;
+  autoUpdateDraft();
+  renderStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function submitForm() {
+  gather();
+  if (!formData.acepta_terminos || !formData.acepta_terminos.includes('si')) {
+    alert('Debe aceptar los términos y la declaración jurada para enviar la solicitud.');
+    return;
+  }
+  accionistas = collectAccionistas('acc') || accionistas;
+  accionistasSworn = collectAccionistas('sworn') || accionistasSworn;
+  formData._accionistas = accionistas;
+  formData._accionistasSworn = accionistasSworn;
+
+  document.getElementById('loadingOverlay').style.display = 'flex';
+
+  const fd = new FormData();
+  fd.append('datos', JSON.stringify(formData));
+  Object.entries(uploadedFiles).forEach(([field, files]) => {
+    files.forEach(f => fd.append(field, f));
+  });
+
+  try {
+    const res = await fetch('/api/solicitudes', { method: 'POST', body: fd });
+    const json = await res.json();
+    document.getElementById('loadingOverlay').style.display = 'none';
+    if (json.success) {
+      showSuccess(json.noSolicitud);
+    } else {
+      alert('Error al enviar: ' + json.error);
+    }
+  } catch (err) {
+    document.getElementById('loadingOverlay').style.display = 'none';
+    alert('Error de conexión. Verifique su conexión a internet e intente nuevamente.');
+  }
+}
+
+function showSuccess(noSolicitud) {
+  document.getElementById('mainCard').innerHTML = `
+    <div class="success-screen">
+      <div class="success-icon">🎉</div>
+      <h2>${t('success_title')}</h2>
+      <p>${t('success_msg')}</p>
+      <div class="solicitud-num">${noSolicitud}</div>
+      <p style="font-size:0.82rem; margin-top:8px">${t('success_keep')}</p>
+      <div style="margin-top:32px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap">
+        <div style="background:#f4f6f9; border-radius:10px; padding:16px 24px; font-size:0.85rem; color:#6b7a8d; max-width:320px; text-align:left">
+          <div style="font-weight:700; color:#1a3a6b; margin-bottom:8px">📞 ${t('success_contact')}</div>
+          <div>Tel: (507) 433-9900</div>
+          <div>Fax: (507) 445-3268</div>
+          <div>Zona Libre de Colón, Panamá</div>
+          <div>Apt. 0302-00493</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary" onclick="location.reload()" style="margin-top:32px">${t('new_request')}</button>
+    </div>`;
+  document.querySelector('.progress-wrap').style.display = 'none';
+}
+
+// ── DRAFT / RECOVERY CODE ────────────────────────────────────────────────────
+
+async function saveDraft() {
+  gather();
+  const payload = { paso: currentStep, datos: formData };
+  try {
+    if (draftCode) {
+      await fetch(`/api/borradores/${draftCode}`, {
+        method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+    } else {
+      const res = await fetch('/api/borradores', {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      draftCode = json.code;
+    }
+    showDraftSavedModal();
+  } catch(e) {
+    alert(currentLang==='en' ? 'Error saving. Check your connection.' : 'Error al guardar. Verifica tu conexión.');
+  }
+}
+
+async function autoUpdateDraft() {
+  if (!draftCode) return;
+  gather();
+  try {
+    await fetch(`/api/borradores/${draftCode}`, {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ paso: currentStep, datos: formData })
+    });
+  } catch(e) {}
+}
+
+async function saveDraftSilent() {
+  gather();
+  const payload = { paso: currentStep, datos: formData };
+  try {
+    if (draftCode) {
+      await fetch(`/api/borradores/${draftCode}`, {
+        method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+    } else {
+      const res = await fetch('/api/borradores', {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      draftCode = json.code;
+      // Show code badge in header so user can note it
+      showDraftCodeBadge(draftCode);
+    }
+  } catch(e) {}
+}
+
+function showDraftCodeBadge(code) {
+  let badge = document.getElementById('draftCodeBadge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.id = 'draftCodeBadge';
+    badge.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0d3d1a;color:#fff;border-radius:12px;padding:12px 18px;font-size:0.85rem;box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:200;cursor:pointer;animation:fadeUp 0.3s ease';
+    badge.onclick = () => showDraftSavedModal();
+    document.body.appendChild(badge);
+  }
+  badge.innerHTML = `💾 Código: <strong style="letter-spacing:2px;font-size:1rem">${code}</strong><div style="font-size:0.7rem;color:#a8d5b5;margin-top:2px">Toca para ver tu código</div>`;
+}
+
+function showDraftSavedModal() {
+  const isEn = currentLang === 'en';
+  document.getElementById('draftSavedTitle').textContent = isEn ? 'Progress saved!' : '¡Progreso guardado!';
+  document.getElementById('draftSavedMsg').textContent = isEn
+    ? 'Use this code to continue your application from any device:'
+    : 'Usa este código para continuar tu solicitud desde cualquier dispositivo:';
+  document.getElementById('draftSavedHint').textContent = isEn
+    ? 'Write down this code or take a screenshot'
+    : 'Anota este código o toma una captura de pantalla';
+  document.getElementById('draftCodeDisplay').textContent = draftCode;
+  document.getElementById('draftSavedModal').style.display = 'flex';
+}
+
+function closeDraftSavedModal() {
+  document.getElementById('draftSavedModal').style.display = 'none';
+}
+
+function showResumeModal() {
+  document.getElementById('resumeModal').style.display = 'flex';
+}
+
+function closeResumeModal() {
+  document.getElementById('resumeModal').style.display = 'none';
+}
+
+async function doResume() {
+  const code = document.getElementById('resumeCodeInput').value.trim().toUpperCase();
+  if (!code) return;
+  const btn = document.getElementById('resumeBtn');
+  const errEl = document.getElementById('resumeError');
+  errEl.style.display = 'none';
+  btn.textContent = '⏳ Buscando...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(`/api/borradores/${code}`);
+    if (!res.ok) throw new Error();
+    const draft = await res.json();
+    draftCode = draft.code;
+    formData = draft.datos || {};
+    currentStep = draft.paso || 0;
+    accionistas = formData._accionistas || [{}];
+    accionistasSworn = formData._accionistasSworn || [{}];
+    closeResumeModal();
+    renderStep();
+  } catch(e) {
+    errEl.style.display = 'block';
+  } finally {
+    btn.textContent = currentLang==='en' ? 'Continue application' : 'Continuar solicitud';
+    btn.disabled = false;
+  }
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+showResumeModal();
+renderStep();
+</script>
+</body>
+</html>
