@@ -1,0 +1,15 @@
+{
+  "name": "mays-email-agent",
+  "version": "1.0.0",
+  "description": "Agente de ventas por correo - clasifica y redacta borradores de respuesta para clientes de MAYS Zona Libre",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@azure/msal-node": "^2.9.2",
+    "node-fetch": "^2.7.0",
+    "node-cron": "^3.0.3"
+  }
+}

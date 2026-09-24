@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Agente de Ventas — MAY'S ZONA LIBRE</title>
+<style>
+  :root { --mays-dark: #0d3d1a; --mays-green: #1a6b2e; }
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f5f6f5; }
+  header { background: var(--mays-dark); color: white; padding: 16px 24px; }
+  header h1 { margin: 0; font-size: 20px; }
+  main { padding: 24px; max-width: 960px; margin: 0 auto; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  button { background: var(--mays-green); color: white; border: none; padding: 10px 16px;
+           border-radius: 6px; cursor: pointer; font-size: 14px; }
+  button:hover { background: var(--mays-dark); }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+  th { background: #eef3ee; }
+  .badge { padding: 3px 8px; border-radius: 12px; font-size: 12px; color: white; }
+  .badge.cliente_nuevo { background: #c0392b; }
+  .badge.queja { background: #c0392b; }
+  .badge.cliente_existente { background: var(--mays-green); }
+  .badge.otro { background: #7f8c8d; }
+  a.draft-link { color: var(--mays-dark); font-weight: 600; }
+</style>
+</head>
+<body>
+<header><h1>Agente de Ventas por Correo</h1></header>
+<main>
+  <div class="toolbar">
+    <span id="status">Cargando...</span>
+    <button id="runBtn">Revisar correos ahora</button>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Fecha</th><th>De</th><th>Asunto</th><th>Categoría</th><th>Aviso enviado</th><th>Borrador</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+</main>
+<script>
+  async function loadLogs() {
+    const res = await fetch('/api/email-agent/logs');
+    const logs = await res.json();
+    const rows = document.getElementById('rows');
+    rows.innerHTML = logs.map(function (l) {
+      return '<tr>' +
+        '<td>' + new Date(l.processedAt).toLocaleString('es-PA') + '</td>' +
+        '<td>' + l.from + '</td>' +
+        '<td>' + l.subject + '</td>' +
+        '<td><span class="badge ' + l.category + '">' + l.category + '</span></td>' +
+        '<td>' + (l.notified ? 'Sí' : 'No') + '</td>' +
+        '<td><a class="draft-link" href="' + l.draftWebLink + '" target="_blank">Abrir</a></td>' +
+        '</tr>';
+    }).join('');
+    document.getElementById('status').textContent = logs.length + ' correo(s) procesado(s)';
+  }
+
+  document.getElementById('runBtn').addEventListener('click', async function () {
+    document.getElementById('status').textContent = 'Revisando...';
+    await fetch('/api/email-agent/run', { method: 'POST' });
+    await loadLogs();
+  });
+
+  loadLogs();
+</script>
+</body>
+</html>
